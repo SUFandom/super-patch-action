@@ -4,6 +4,7 @@ Just a Samsung super.img Builder
 
 EXPERIMENTAL BETA RELEASE
 
+(i should've use circle-ci, github actions is slow af)
 
 ## How to use 
 ```
