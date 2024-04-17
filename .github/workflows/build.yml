@@ -357,18 +357,51 @@ jobs:
                   env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 
-                - name: Upload to Sourceforge
+                - name: Upload to Sourceforge - .tar
                   continue-on-error: true
                   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
                   with: 
                    username: "${{ secrets.SOURCEFORGE_USERNAME }}"
                    password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
                    port: 22
-                   local_path: |
-                        "*.tar"
-                        "*.tar.xz"
-                        "*.7z"  
+                   local_path: '*.tar'
                    server: frs.sourceforge.net
                    remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
                    ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+                
+                - name: Upload to Sourceforge - .tar.xz
+                  continue-on-error: true
+                  uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+                  with: 
+                    username: "${{ secrets.SOURCEFORGE_USERNAME }}"
+                    password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
+                    port: 22
+                    local_path: "*.tar.xz"
+                    server: frs.sourceforge.net
+                    remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+                
+                - name: Upload to Sourceforge - .tar.xz
+                  continue-on-error: true
+                  uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+                  with: 
+                    username: "${{ secrets.SOURCEFORGE_USERNAME }}"
+                    password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
+                    port: 22
+                    local_path: "*.7z"
+                    server: frs.sourceforge.net
+                    remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+
+                # - name: Upload to Sourceforge - RAW
+                #   continue-on-error: true
+                #   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+                #   with: 
+                #     username: "${{ secrets.SOURCEFORGE_USERNAME }}"
+                #     password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
+                #     port: 22
+                #     local_path: "image_build/super.img"
+                #     server: frs.sourceforge.net
+                #     remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
    
