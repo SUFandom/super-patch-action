@@ -381,7 +381,7 @@ jobs:
                     remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
                     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
                 
-                - name: Upload to Sourceforge - .tar.xz
+                - name: Upload to Sourceforge - .7z
                   continue-on-error: true
                   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
                   with: 
