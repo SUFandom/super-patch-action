@@ -3,6 +3,9 @@ name: Patch GSI to Samsung Super Image
 on:
     workflow_dispatch:
         inputs:
+            TAR_SUPER:
+                description: 'Super Image, but in TAR'
+                required: false
             LZ4_SUPER:
                 description: 'Super Image, but in lz4'
                 required: false
@@ -112,6 +115,24 @@ jobs:
                         exit 1
                     fi
                 
+                
+                - name: Grabbing Super Image - TAR
+                  if: |
+                      github.event.inputs.TAR_SUPER != null
+                      && github.event.inputs.SUPER_LOCATE == null
+                      && github.event.inputs.LZ4_SUPER == null
+                  run: |
+                    echo "Preparing"
+                    mkdir image_build
+                    export DIR="$(pwd)/image_build"
+                    export ODM="$DIR/odm.img"
+                    export SYSTEM="$DIR/system.img"
+                    export SYSTEM_EXT="$DIR/system_ext.img"
+                    export VENDOR="$DIR/vendor.img"
+                    export SUPER="$DIR/super.img"
+                    wget ${{ github.event.inputs.TAR_SUPER }}
+                    tar -xf *.tar
+                    mv super.img $DIR/
 
                 - name: Grabbing Super Image - LZ4
                   if: |
