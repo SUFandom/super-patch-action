@@ -5,7 +5,7 @@ Just a Samsung super.img Builder
 EXPERIMENTAL BETA RELEASE
 
 
-## How to use (Forked from Build-TWRP)
+## How to use 
 ```
 For example, your username is: JohnSmith
 ```
@@ -46,3 +46,12 @@ cat ssh_host_ed25519_key
    For the New secret name, it should be SSH_PRIVATE_KEY
    Paste the output from ssh_host_ed25519_key into the Value box.
    Then select Add secret.
+
+#### 9. Build GSI
+
+There are 3 boxes mentioning super image
+
+![image](images/image.png)
+
+Only select one because the Action result may be bad
+

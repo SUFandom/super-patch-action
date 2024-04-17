@@ -136,8 +136,9 @@ jobs:
 
                 - name: Grabbing Super Image - LZ4
                   if: |
-                    github.event.inputs.LZ4_SUPER != null
-                    && github.event.inputs.SUPER_LOCATE == null
+                   github.event.inputs.TAR_SUPER == null
+                   && github.event.inputs.SUPER_LOCATE == null
+                   && github.event.inputs.LZ4_SUPER != null
                   run: |
                    echo "Preparing"
                    mkdir image_build
@@ -153,8 +154,9 @@ jobs:
 
                 - name: Grabbing Super Image
                   if:
-                    github.event.inputs.LZ4_SUPER == null
+                    github.event.inputs.TAR_SUPER == null
                     && github.event.inputs.SUPER_LOCATE != null
+                    && github.event.inputs.LZ4_SUPER == null
                   run: |
                     echo "Preparing"
                     mkdir image_build
