@@ -295,13 +295,31 @@ jobs:
                         #    ;;
                     esac
 
-                - name: Upload to Github Artifacts, since Github Releases is a pain in the arse
+                - name: Upload to Github Artifacts, tar
+                  continue-on-error: true
                   uses: actions/upload-artifact@v4
                   with: 
                     name: ${{ github.event.inputs.NAME_REL }}
                     path: |
                         "${{ github.event.inputs.NAME_ID }}.tar"
-                        "${{ github.event.inputs.NAME_ID }}.tar.xz"
+                    compression-level: 9
+                
+                - name: Upload to Github Artifacts, tar.xz
+                  continue-on-error: true
+                  uses: actions/upload-artifact@v4
+                  with: 
+                      name: ${{ github.event.inputs.NAME_REL }}
+                      path: |
+                          "${{ github.event.inputs.NAME_ID }}.tar.xz"
+                      compression-level: 9
+
+
+                - name: Upload to Github Artifacts, 7z
+                  continue-on-error: true
+                  uses: actions/upload-artifact@v4
+                  with: 
+                    name: ${{ github.event.inputs.NAME_REL }}
+                    path: |
                         "${{ github.event.inputs.NAME_ID }}.7z"
                     compression-level: 9
 
