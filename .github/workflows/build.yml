@@ -1,0 +1,261 @@
+name: Patch GSI to Samsung Super Image
+
+on:
+    workflow_dispatch:
+        inputs:
+            SUPER_LOCATE:
+                description: 'Super Image Link, make sure its in super.img form, NOT IN SUPER.IMG.LZ4'
+                required: true
+            NAME_ID:
+                description: 'What you want to call the finished product'
+                required: true
+                default: 'extract'
+            COMPRESSION_CHOICE:
+                description: 'Contain the image? (other types of compression coming soon)'
+                required: true
+                default: 'yes-tar'
+                type: choice
+                options:
+                    - 'tar'
+                    - 'xz'
+                    - '7z'
+                    - 'uncompressed'
+            GSI_IMG_LOCATION_XT:
+                description: 'Enter GSI Link (Extracted, img only, NO SPACES!)'
+                required: false
+            GSI_IMG_LOCATION_CMP:
+                description: 'Enter GSI Link (Compressed into .xz)'
+                required: false
+            NAME_REL:
+                description: 'Enter Name for Github Release'
+                required: true
+
+jobs:
+    Building-GSI:
+        if: github.event.repository.owner.id == github.event.sender.id
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+                - name: Display Session Parameters, for Logging Purposes
+                  run: |
+                    echo "::group::User ENV Var"
+                    echo "Super Location: ${{ github.event.inputs.SUPER_LOCATE }}"
+                    echo "Name ID: ${{ github.event.inputs.NAME_ID }}"
+                    echo "Compression Choice: ${{ github.event.inputs.COMPRESSION_CHOICE }}"
+                    echo "GSI IMG Location in Extracted Form: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}"
+                    echo "GSI IMG Location in Compressed form: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}"
+                    echo "Name REL: ${{ github.event.inputs.NAME_REL }}"
+
+
+                - name: Check Out
+                  uses: actions/checkout@v3
+
+                - name: Cleanup Bloated Action Environment
+                  uses: rokibhasansagar/slimhub_actions@main
+                
+                - name: Display Size Block
+                  run: |
+                    lsblk
+                
+                - name: Prepare the Environment
+                  run: |
+                    sudo apt update
+                    sudo apt upgrade -y
+                    sudo apt install p7zip* wget cat android-tools* lz4 zstd libprotobuf-dev brotli android-sdk-libsparse-utils
+                    # IDK TF AM I DOING
+                    pwd >> dir.txt
+                    LOCATION_POINT=$(pwd)
+                    echo $LOCATION_POINT
+                
+                - name: Grab Utils
+                  run: |
+                    mkdir bin
+                    cd bin
+                    wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpadd
+                    wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpdump
+                    wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpmake
+                    wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpunpack
+                    chmod +x *
+                    sudo cp * /usr/bin/
+                    cd ..
+                    mkdir universal
+                    cd universal
+                    wget https://github.com/SUFandom/super-patch/raw/main/fake-props/product.img
+                    wget https://github.com/SUFandom/super-patch/raw/main/fake-props/system_ext.img
+                    cd ..
+
+                - name: Grabbing Images
+                  run: |
+                    if [[ -n ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }} ]] && [[ -n ${{ github.event.inputs.GSI_IMG_LOCATION_XT }} ]]; then
+                    echo "Only One variable are allowed"
+                    exit 1
+                    fi
+                    if [[ -n ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }} ]]; then
+                        mkdir cmp_img
+                        cd cmp_img
+                        wget ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
+                        7za x *.xz
+                        cp *.img system.img
+                        cd ..
+                    elif [[ -n ${{ github.event.inputs.GSI_IMG_LOCATION_XT }} ]]; then
+                        mkdir cmp_img
+                        cd cmp_img
+                        wget ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
+                        cp *.img system.img
+                        cd ..
+                    else
+                        echo "Error, Empty INPUT"
+                        exit 1
+                    fi
+                
+                - name: Grabbing Super Image
+                  run: |
+                    echo "Preparing"
+                    mkdir image_build
+                    export DIR="$(pwd)/image_build"
+                    export ODM="$DIR/odm.img"
+                    export SYSTEM="$DIR/system.img"
+                    export SYSTEM_EXT="$DIR/system_ext.img"
+                    export VENDOR="$DIR/vendor.img"
+                    export SUPER="$DIR/super.img"
+                    wget ${{ github.event.inputs.SUPER_LOCATE }}
+                    mv super.img $(pwd)/image_build/
+
+                - name: Indexing Files
+                  run: |
+                   # Tryna make sure lol
+                   export DIR="$(pwd)/image_build"
+                   export ODM="$DIR/odm.img"
+                   export SYSTEM="$DIR/system.img"
+                   export SYSTEM_EXT="$DIR/system_ext.img"
+                   export VENDOR="$DIR/vendor.img"
+                   export SUPER="$DIR/super.img"
+                   # Add some temps
+                   export TMP_ENVIRO="$(pwd)/tmp"
+                   if [ -e "$DIR/super.img" ]; then
+                    simg2img $DIR/super.img $DIR/super_raw.img
+                    if [ -e "$DIR/super_raw.img" ]; then
+                        if [ "$(ls -nl "$DIR/super_raw.img" | awk '{print $5}')" -lt 100000 ]; then
+                            rm -rf super_raw.img
+                            lpdump $DIR/super.img > $TMP_ENVIRO/super_map.txt
+                            printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Size:" | awk '{print $2}' > $TMP_ENVIRO/super_size.txt
+                            printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Maximum size:" | awk '{print $3}' | sed '2!d' > $TMP_ENVIRO/super_main.txt
+                            lpunpack $DIR/super.img $DIR/
+                        else
+                            rm -rf $DIR/super.img
+                            lpdump $DIR/super_raw.img > $TMP_ENVIRO/super_map.txt
+                            printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Size:" | awk '{print $2}' > $TMP_ENVIRO/super_size.txt
+                            printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Maximum size:" | awk '{print $3}' | sed '2!d' > $TMP_ENVIRO/super_main.txt
+                            lpunpack $DIR/super_raw.img $DIR/
+                        fi
+                    else
+                        echo "Super.img is corrupted"
+                        exit 1
+                   fi
+                
+                - name: Editing the Super.img
+                  run: |
+                   # Tryna make sure lol
+                   export DIR="$(pwd)/image_build"
+                   export ODM="$DIR/odm.img"
+                   export SYSTEM="$DIR/system.img"
+                   export SYSTEM_EXT="$DIR/system_ext.img"
+                   export VENDOR="$DIR/vendor.img"
+                   export SUPER="$DIR/super.img"
+                   # Add some temps
+                   export TMP_ENVIRO="$(pwd)/tmp"
+                   rm -rf $SYSTEM
+                   mv cmp_img/system.img $SYSTEM
+                   if [ "$(ls -nl "$gsi_input" | awk '{print $5}')" -lt 100000 ]; then 
+                    echo "Invalid size for a GSI"
+                    exit 1
+                    fi
+                   
+                - name: Building the whole Super.img
+                  run: |
+                   # Tryna make sure lol
+                   export DIR="$(pwd)/image_build"
+                   export ODM="$DIR/odm.img"
+                   export SYSTEM="$DIR/system.img"
+                   export SYSTEM_EXT="$DIR/system_ext.img"
+                   export VENDOR="$DIR/vendor.img"
+                   export SUPER="$DIR/super.img"
+                   # Add some temps
+                   export TMP_ENVIRO="$(pwd)/tmp"
+                   rm -rf $SUPER
+                   if [ "$(find $DIR/system.img -type f ! -size 0 -printf '%S\n' | sed 's/.\.[0-9]*//')" == 1 ]; then
+                        echo "PRC"
+                   else
+                        mdt "Something needs to be taken care of... Please Wait..."
+                        simg2img $DIR/system.img $DIR/system.raw.img
+                   fi
+                   if [ -e "$DIR/odm.img" ]; then
+                        if [ -e "$DIR/product.img" ]; then
+                            if [ "$(ls -nl $DIR/product.img | awk '{print $5}')" -gt 6000 ]; then 
+                                cp -rf universal/product.img $DIR/product.img
+                            fi
+                        else
+                            cp -rf universal/product.img $DIR/product.img
+                        fi
+                        lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:$(<$TMP_ENVIRO/super_size.txt) --group main:$(<$TMP_ENVIRO/super_main.txt) --partition system:readonly:$(ls -nl $DIR/system.img | awk '{print $5}'):main --image system=$DIR/system.img --partition vendor:readonly:$(ls -nl $DIR/vendor.img | awk '{print $5}'):main --image vendor=$DIR/vendor.img --partition product:readonly:$(ls -nl $DIR/product.img | awk '{print $5}'):main --image product=$DIR/product.img --partition odm:readonly:$(ls -nl $DIR/odm.img | awk '{print $5}'):main --image odm=$DIR/odm.img --sparse --output $DIR/super.img\
+                   else
+                        if [ -e "$DIR/product.img" ]; then 
+                             if [ "$(ls -nl $DIR/product.img | awk '{print $5}')" -gt 6000 ]; then
+                                cp -rf universal/product.img $DIR/product.img
+                             fi
+                        else 
+                            cp -rf universal/product.img $DIR/product.img
+                        fi
+                        if [ ! -e "$DIR/system_ext.img" ]; then
+                            cp -rf universal/system_ext.img $DIR/product.img
+                        else 
+                            cp -rf universal/system_ext.img $DIR/product.img
+                        fi 
+                        lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:$(<$TMP_ENVIRO/super_size.txt) --group main:$(<$TMP_ENVIRO/super_main.txt) --partition system:readonly:$(ls -nl $DIR/system.img | awk '{print $5}'):main --image system=$DIR/system.img --partition vendor:readonly:$(ls -nl $DIR/vendor.img | awk '{print $5}'):main --image vendor=$DIR/vendor.img --partition product:readonly:$(ls -nl $DIR/product.img | awk '{print $5}'):main --image product=$DIR/product.img --partition system_ext:readonly:$(ls -nl $DIR/system_ext.img | awk '{print $5}'):main --image system_ext=$DIR/system_ext.img --sparse --output $DIR/super.img
+
+                - name: Packing the image
+                  run: |
+                   # Tryna make sure lol
+                   export DIR="$(pwd)/image_build"
+                   export ODM="$DIR/odm.img"
+                   export SYSTEM="$DIR/system.img"
+                   export SYSTEM_EXT="$DIR/system_ext.img"
+                   export VENDOR="$DIR/vendor.img"
+                   export SUPER="$DIR/super.img"
+                   # Add some temps
+                   export TMP_ENVIRO="$(pwd)/tmp"
+                   export SELECT_SLIDER="${{ github.event.inputs.COMPRESSION_CHOICE }}"
+                   export NAME_CHOICE="${{ github.event.inputs.NAME_ID }}"
+                    case "$SELECT_SLIDER" in
+                        "tar")
+                            tar -cvf "$NAME_CHOICE" $SUPER
+                            ;;
+                        "xz")
+                            tar --xz -cvf "$NAME_CHOICE" $SUPER
+                            ;;
+                        "7z")
+                            7za a "$NAME_CHOICE" $SUPER
+                            ;;
+                        "uncompressed")
+                            echo "Bruh, ok"
+                            ;;
+                    esac
+
+                - name: Upload to Github Releases
+                  uses: softprops/action-gh-release@v1
+                  with:
+                        files: |
+                            image_build/super.img
+                            ${{ github.event.inputs.NAME_ID }}.tar
+                            ${{ github.event.inputs.NAME_ID }}.tar.xz
+                            ${{ github.event.inputs.NAME_ID }}.7z
+                        name: ${{ github.event.inputs.NAME_REL }} - ${{ github.run_id }}
+                        tag_name: ${{ github.run_id }}
+                        body: |
+                            Super Image File used: ${{ github.event.inputs.SUPER_LOCATE }} 
+                            GSI Downloaded:
+                                Compressed: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
+                                Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
+                  env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
