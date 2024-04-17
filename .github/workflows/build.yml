@@ -303,8 +303,9 @@ jobs:
                         "*.tar"
                         "*.tar.xz"
                         "*.7z"
-                        
+
                 - name: Upload to Github Releases
+                  continue-on-error: true
                   uses: softprops/action-gh-release@v2
                   with:
                         files: |
