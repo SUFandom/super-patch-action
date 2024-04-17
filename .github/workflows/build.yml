@@ -336,7 +336,7 @@ jobs:
                         body: |
                             Super Image File used: ${{ github.event.inputs.SUPER_LOCATE }} 
                             GSI Downloaded:
-                                Compressed: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
-                                Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
+                                - Compressed: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
+                                - Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
                   env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
