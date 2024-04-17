@@ -300,7 +300,6 @@ jobs:
                   uses: softprops/action-gh-release@v1
                   with:
                         files: |
-                            image_build/super.img
                             ${{ github.event.inputs.NAME_ID }}.tar
                             ${{ github.event.inputs.NAME_ID }}.tar.xz
                             ${{ github.event.inputs.NAME_ID }}.7z
