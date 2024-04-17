@@ -266,6 +266,7 @@ jobs:
                             cp -rf universal/system_ext.img $DIR/product.img
                         fi 
                         lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:$(<$TMP_ENVIRO/super_size.txt) --group main:$(<$TMP_ENVIRO/super_main.txt) --partition system:readonly:$(ls -nl $DIR/system.img | awk '{print $5}'):main --image system=$DIR/system.img --partition vendor:readonly:$(ls -nl $DIR/vendor.img | awk '{print $5}'):main --image vendor=$DIR/vendor.img --partition product:readonly:$(ls -nl $DIR/product.img | awk '{print $5}'):main --image product=$DIR/product.img --partition system_ext:readonly:$(ls -nl $DIR/system_ext.img | awk '{print $5}'):main --image system_ext=$DIR/system_ext.img --sparse --output $DIR/super.img
+                    fi
 
                 - name: Packing the image
                   run: |
