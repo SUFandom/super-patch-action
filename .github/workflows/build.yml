@@ -224,6 +224,7 @@ jobs:
                     echo "Invalid size for a GSI"
                     exit 1
                     fi
+                    cp universal/* $DIR/
                    
                 - name: Building the whole Super.img
                   run: |
@@ -240,7 +241,6 @@ jobs:
                    if [ "$(find $DIR/system.img -type f ! -size 0 -printf '%S\n' | sed 's/.\.[0-9]*//')" == 1 ]; then
                         echo "PRC"
                    else
-                        mdt "Something needs to be taken care of... Please Wait..."
                         simg2img $DIR/system.img $DIR/system.raw.img
                    fi
                    if [ -e "$DIR/odm.img" ]; then
