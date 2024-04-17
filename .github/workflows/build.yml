@@ -285,16 +285,25 @@ jobs:
                             tar -cvf "$(pwd)/$NAME_CHOICE" image_build/super.img
                             ;;
                         "xz")
-                            tar --xz -cvf "$(pwd)/$NAME_CHOICE" image_build/super.img
+                            tar --xz -Jcvf "$(pwd)/$NAME_CHOICE" image_build/super.img
                             ;;
                         "7z")
-                            7za a "$(pwd)/$NAME_CHOICE" image_build/super.img
+                            7za a -mx=9 "$(pwd)/$NAME_CHOICE.7z" image_build/super.img
                             ;;
                         # "uncompressed")
                         #     echo "Bruh, ok"
                         #    ;;
                     esac
 
+                - name: Upload to Github Artifacts, since Github Releases is a pain in the arse
+                  uses: actions/upload-artifact@v4
+                  with: 
+                    name: ${{ github.event.inputs.NAME_REL }}
+                    path: |
+                        "*.tar"
+                        "*.tar.xz"
+                        "*.7z"
+                        
                 - name: Upload to Github Releases
                   uses: softprops/action-gh-release@v2
                   with:
@@ -311,9 +320,3 @@ jobs:
                                 Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
                   env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-                # - name: Upload to Github Artifacts, since Github Releases is a pain in the arse
-                #   uses: actions/upload-artifact@v4
-                #   with: 
-                #     name: ${{ github.event.inputs.NAME_REL }}
-                #     path: "*${{ github.event.inputs.NAME_ID }}*"
