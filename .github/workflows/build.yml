@@ -292,7 +292,7 @@ jobs:
                             ;;
                         # "uncompressed")
                         #     echo "Bruh, ok"
-                            ;;
+                        #    ;;
                     esac
 
                 - name: Upload to Github Releases
