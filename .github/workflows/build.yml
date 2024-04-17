@@ -224,7 +224,7 @@ jobs:
                    export TMP_ENVIRO="$(pwd)/tmp"
                    rm -rf $SYSTEM
                    mv cmp_img/system.img $SYSTEM
-                   if [ "$(ls -nl "$gsi_input" | awk '{print $5}')" -lt 100000 ]; then 
+                   if [ "$(ls -nl "$SYSTEM" | awk '{print $5}')" -lt 100000 ]; then 
                     echo "Invalid size for a GSI"
                     exit 1
                     fi
