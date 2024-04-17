@@ -353,6 +353,7 @@ jobs:
                             GSI Downloaded:
                                 - Compressed: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
                                 - Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
+                            Link to SourceForge: https://sourceforge.net/projects/xynoxx-prebuilt-gsi
                   env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 
@@ -370,3 +371,4 @@ jobs:
                    server: frs.sourceforge.net
                    remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
                    ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+   
