@@ -294,7 +294,7 @@ jobs:
                         #     echo "Bruh, ok"
                         #    ;;
                     esac
-
+# DONT BLAME ME, BLAME THE CREATORS OF ARTIFACTS, NOT ALLOWING DIRECT FILE DETECTION UNLIKE GITHUB RELEASE
                 - name: Upload to Github Artifacts, tar
                   continue-on-error: true
                   uses: actions/upload-artifact@v4
