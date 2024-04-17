@@ -3,9 +3,12 @@ name: Patch GSI to Samsung Super Image
 on:
     workflow_dispatch:
         inputs:
+            LZ4_SUPER:
+                description: 'Super Image, but in lz4'
+                required: false
             SUPER_LOCATE:
                 description: 'Super Image Link, make sure its in super.img form, NOT IN SUPER.IMG.LZ4'
-                required: true
+                required: false
             NAME_ID:
                 description: 'What you want to call the finished product'
                 required: true
@@ -46,7 +49,7 @@ jobs:
                     echo "GSI IMG Location in Extracted Form: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}"
                     echo "GSI IMG Location in Compressed form: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}"
                     echo "Name REL: ${{ github.event.inputs.NAME_REL }}"
-
+                    echo "Super LZ4: ${{ github.event.inputs.LZ4_SUPER }}"
 
                 - name: Check Out
                   uses: actions/checkout@v3
@@ -109,7 +112,28 @@ jobs:
                         exit 1
                     fi
                 
+
+                - name: Grabbing Super Image - LZ4
+                  if: |
+                    github.event.inputs.LZ4_SUPER != null
+                    && github.event.inputs.SUPER_LOCATE == null
+                  run: |
+                   echo "Preparing"
+                   mkdir image_build
+                   export DIR="$(pwd)/image_build"
+                   export ODM="$DIR/odm.img"
+                   export SYSTEM="$DIR/system.img"
+                   export SYSTEM_EXT="$DIR/system_ext.img"
+                   export VENDOR="$DIR/vendor.img"
+                   export SUPER="$DIR/super.img"
+                   wget ${{ github.event.inputs.LZ4_SUPER }}
+                   lz4 super.img.lz4
+                   mv super.img $DIR/
+
                 - name: Grabbing Super Image
+                  if:
+                    github.event.inputs.LZ4_SUPER == null
+                    && github.event.inputs.SUPER_LOCATE != null
                   run: |
                     echo "Preparing"
                     mkdir image_build
