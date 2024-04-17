@@ -68,7 +68,7 @@ jobs:
                   run: |
                     sudo apt update
                     sudo apt upgrade -y
-                    sudo apt install p7zip* wget cat android-tools* lz4 zstd libprotobuf-dev brotli android-sdk-libsparse-utils
+                    sudo apt install p7zip* wget android-tools* lz4 zstd libprotobuf-dev brotli android-sdk-libsparse-utils
                     # IDK TF AM I DOING
                     pwd >> dir.txt
                     LOCATION_POINT=$(pwd)
