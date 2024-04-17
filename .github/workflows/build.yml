@@ -43,6 +43,8 @@ jobs:
         permissions:
             contents: write
         steps:
+            
+
                 - name: Display Session Parameters, for Logging Purposes
                   run: |
                     echo "::group::User ENV Var"
@@ -182,6 +184,7 @@ jobs:
                    export SUPER="$DIR/super.img"
                    # Add some temps
                    export TMP_ENVIRO="$(pwd)/tmp"
+                   mkdir tmp
                    if [ -e "$DIR/super.img" ]; then
                     simg2img $DIR/super.img $DIR/super_raw.img
                     if [ -e "$DIR/super_raw.img" ]; then
