@@ -295,19 +295,25 @@ jobs:
                             ;;
                     esac
 
-                - name: Upload to Github Releases
-                  uses: softprops/action-gh-release@v1
-                  with:
-                        files: |
-                            ${{ github.event.inputs.NAME_ID }}.tar
-                            ${{ github.event.inputs.NAME_ID }}.tar.xz
-                            ${{ github.event.inputs.NAME_ID }}.7z
-                        name: ${{ github.event.inputs.NAME_REL }} - ${{ github.run_id }}
-                        tag_name: ${{ github.run_id }}
-                        body: |
-                            Super Image File used: ${{ github.event.inputs.SUPER_LOCATE }} 
-                            GSI Downloaded:
-                                Compressed: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
-                                Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
-                  env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                # - name: Upload to Github Releases
+                #   uses: softprops/action-gh-release@v1
+                #   with:
+                #         files: |
+                #             ${{ github.event.inputs.NAME_ID }}.tar
+                #             ${{ github.event.inputs.NAME_ID }}.tar.xz
+                #             ${{ github.event.inputs.NAME_ID }}.7z
+                #         name: ${{ github.event.inputs.NAME_REL }} - ${{ github.run_id }}
+                #         tag_name: ${{ github.run_id }}
+                #         body: |
+                #             Super Image File used: ${{ github.event.inputs.SUPER_LOCATE }} 
+                #             GSI Downloaded:
+                #                 Compressed: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
+                #                 Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
+                #   env:
+                #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+                - name: Upload to Github Artifacts, since Github Releases is a pain in the arse
+                  uses: actions/upload-artifact@v4
+                  with: 
+                    name: sdf
+                    path: "*${{ github.event.inputs.NAME_ID }}*"
