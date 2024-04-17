@@ -282,13 +282,13 @@ jobs:
                    export NAME_CHOICE="${{ github.event.inputs.NAME_ID }}"
                     case "$SELECT_SLIDER" in
                         "tar")
-                            tar -cvf "$NAME_CHOICE" image_build/super.img
+                            tar -cvf "$(pwd)/$NAME_CHOICE" image_build/super.img
                             ;;
                         "xz")
-                            tar --xz -cvf "$NAME_CHOICE" image_build/super.img
+                            tar --xz -cvf "$(pwd)/$NAME_CHOICE" image_build/super.img
                             ;;
                         "7z")
-                            7za a "$NAME_CHOICE" image_build/super.img
+                            7za a "$(pwd)/$NAME_CHOICE" image_build/super.img
                             ;;
                         "uncompressed")
                             echo "Bruh, ok"
