@@ -315,5 +315,5 @@ jobs:
                 - name: Upload to Github Artifacts, since Github Releases is a pain in the arse
                   uses: actions/upload-artifact@v4
                   with: 
-                    name: sdf
+                    name: ${{ github.event.inputs.NAME_REL }}
                     path: "*${{ github.event.inputs.NAME_ID }}*"
