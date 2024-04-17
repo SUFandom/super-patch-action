@@ -34,6 +34,9 @@ on:
             NAME_REL:
                 description: 'Enter Name for Github Release'
                 required: true
+            FOLDER_HEADING:
+                description: 'Enter what directory it will land on Sourceforge (REQUIRES THAT DIRECTORY TO BE PRESENT THERE, DOUBLE CHECK IT PLEASE)'
+                required: true
 
 jobs:
     Building-GSI:
@@ -54,6 +57,7 @@ jobs:
                     echo "GSI IMG Location in Compressed form: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}"
                     echo "Name REL: ${{ github.event.inputs.NAME_REL }}"
                     echo "Super LZ4: ${{ github.event.inputs.LZ4_SUPER }}"
+                    echo "Heading: ${{ github.event.inputs.FOLDER_HEADING }}"
 
                 - name: Check Out
                   uses: actions/checkout@v3
@@ -351,3 +355,18 @@ jobs:
                                 - Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
                   env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                
+                - name: Upload to Sourceforge
+                  continue-on-error: true
+                  uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+                  with: 
+                   username: "${{ secrets.SOURCEFORGE_USERNAME }}"
+                   password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
+                   port: 22
+                   local_path: |
+                        "*.tar"
+                        "*.tar.xz"
+                        "*.7z"  
+                   server: frs.sourceforge.net
+                   remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                   ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
