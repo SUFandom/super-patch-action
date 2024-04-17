@@ -25,7 +25,6 @@ on:
                     - 'tar'
                     - 'xz'
                     - '7z'
-                    - 'uncompressed'
             GSI_IMG_LOCATION_XT:
                 description: 'Enter GSI Link (Extracted, img only, NO SPACES!)'
                 required: false
