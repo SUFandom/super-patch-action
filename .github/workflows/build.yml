@@ -303,6 +303,7 @@ jobs:
                         "*.tar"
                         "*.tar.xz"
                         "*.7z"
+                    compression-level: 9
 
                 - name: Upload to Github Releases
                   continue-on-error: true
