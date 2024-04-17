@@ -93,18 +93,20 @@ jobs:
 
                 - name: Grabbing Images
                   run: |
-                    if [[ -n ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }} ]] && [[ -n ${{ github.event.inputs.GSI_IMG_LOCATION_XT }} ]]; then
+                    LOC_CMP="${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}"
+                    LOC_XT="${{ github.event.inputs.GSI_IMG_LOCATION_XT }}"
+                    if [[ -n "$LOC_CMP" ]] && [[ -n "$LOC_XT" ]]; then
                     echo "Only One variable are allowed"
                     exit 1
                     fi
-                    if [[ -n ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }} ]]; then
+                    if [[ -n "$LOC_CMP" ]]; then
                         mkdir cmp_img
                         cd cmp_img
                         wget ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
                         7za x *.xz
                         cp *.img system.img
                         cd ..
-                    elif [[ -n ${{ github.event.inputs.GSI_IMG_LOCATION_XT }} ]]; then
+                    elif [[ -n "$LOC_XT" ]]; then
                         mkdir cmp_img
                         cd cmp_img
                         wget ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
