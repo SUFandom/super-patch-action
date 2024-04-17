@@ -55,3 +55,31 @@ There are 3 boxes mentioning super image
 
 Only select one because the Action result may be bad
 
+#### 10. What you want to call the finished product
+
+You can just rename anything, as long as no spaces and only use `-` and `_` as separators
+
+#### 11. Contain Image type
+
+You can go with compressed, or uncompressed ones
+
+Compression:
+
+- tar
+- 7z
+- tar.xz
+
+#### 12. Another two of GSI links are present
+
+Only enter one with link
+
+like:
+
+```
+GSI Link, compressed:
+<link>
+```
+
+#### 13. Github Release Name
+
+Name the GH RELEASE NAME
