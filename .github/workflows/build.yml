@@ -102,14 +102,14 @@ jobs:
                     if [[ -n "$LOC_CMP" ]]; then
                         mkdir cmp_img
                         cd cmp_img
-                        wget ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
+                        wget -q ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
                         7za x *.xz
                         cp *.img system.img
                         cd ..
                     elif [[ -n "$LOC_XT" ]]; then
                         mkdir cmp_img
                         cd cmp_img
-                        wget ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
+                        wget -q ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
                         cp *.img system.img
                         cd ..
                     else
