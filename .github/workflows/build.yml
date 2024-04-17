@@ -132,7 +132,7 @@ jobs:
                     export SYSTEM_EXT="$DIR/system_ext.img"
                     export VENDOR="$DIR/vendor.img"
                     export SUPER="$DIR/super.img"
-                    wget ${{ github.event.inputs.TAR_SUPER }}
+                    wget -q ${{ github.event.inputs.TAR_SUPER }}
                     tar -xf *.tar
                     mv super.img $DIR/
 
@@ -150,7 +150,7 @@ jobs:
                    export SYSTEM_EXT="$DIR/system_ext.img"
                    export VENDOR="$DIR/vendor.img"
                    export SUPER="$DIR/super.img"
-                   wget ${{ github.event.inputs.LZ4_SUPER }}
+                   wget -q ${{ github.event.inputs.LZ4_SUPER }}
                    lz4 super.img.lz4
                    mv super.img $DIR/
 
@@ -168,7 +168,7 @@ jobs:
                     export SYSTEM_EXT="$DIR/system_ext.img"
                     export VENDOR="$DIR/vendor.img"
                     export SUPER="$DIR/super.img"
-                    wget ${{ github.event.inputs.SUPER_LOCATE }}
+                    wget -q ${{ github.event.inputs.SUPER_LOCATE }}
                     mv super.img $(pwd)/image_build/
 
                 - name: Indexing Files
