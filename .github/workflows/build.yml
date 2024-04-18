@@ -412,7 +412,7 @@ jobs:
                     compress: false
                     forceUpload: true
                     localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar'
-                    remoteDir: '/home/pfs/project/${{secrets.SOURCEFORGE_REPO_TARGET}}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
                     exclude: '.git*,universal,image_build,bin'
                 
                 - name: Send to Sourceforge - TAR.xz
@@ -426,7 +426,7 @@ jobs:
                     compress: false
                     forceUpload: true
                     localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar.xz'
-                    remoteDir: '/home/pfs/project/${{secrets.SOURCEFORGE_REPO_TARGET}}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
                     exclude: '.git*,universal,image_build,bin'
                 
 
