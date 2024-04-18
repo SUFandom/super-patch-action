@@ -138,7 +138,7 @@ jobs:
                     export PRODUCT="$DIR/product.img"
                     export VENDOR="$DIR/vendor.img"
                     export SUPER="$DIR/super.img"
-                    aria2c -x 10 ${{ github.event.inputs.TAR_SUPER }}
+                    aria2c -x 15 ${{ github.event.inputs.TAR_SUPER }}
                     tar -xf *.tar
                     mv super.img $DIR/
 
