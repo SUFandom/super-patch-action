@@ -363,41 +363,42 @@ jobs:
                 
                 
                 
-                # - name: Upload to Sourceforge - .tar.xz
-                #   continue-on-error: true
-                #   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-                #   with: 
-                #     username: "${{ secrets.SOURCEFORGE_USERNAME }}"
-                #     password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
-                #     port: 22
-                #     local_path: "rel/*.tar.xz"
-                #     server: frs.sourceforge.net
-                #     remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+                - name: Upload to Sourceforge - .tar.xz
+                  continue-on-error: true
+                  uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+                  with: 
+                    username: "${{ secrets.SOURCEFORGE_USERNAME }}"
+                    password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
+                    port: 22
+                    local_path: "./rel/${{ github.event.inputs.NAME_ID }}.tar.xz"
+                    server: frs.sourceforge.net
+                    remote_path: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+                    
                 
-                # - name: Upload to Sourceforge - .7z
-                #   continue-on-error: true
-                #   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-                #   with: 
-                #     username: "${{ secrets.SOURCEFORGE_USERNAME }}"
-                #     password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
-                #     port: 22
-                #     local_path: "rel/*.7z"
-                #     server: frs.sourceforge.net
-                #     remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+                - name: Upload to Sourceforge - .7z
+                  continue-on-error: true
+                  uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+                  with: 
+                    username: "${{ secrets.SOURCEFORGE_USERNAME }}"
+                    password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
+                    port: 22
+                    local_path: "./rel/${{ github.event.inputs.NAME_ID }}.7z"
+                    server: frs.sourceforge.net
+                    remote_path: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
 
-                # - name: Upload to Sourceforge - tar
-                #   continue-on-error: true
-                #   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-                #   with: 
-                #     username: "${{ secrets.SOURCEFORGE_USERNAME }}"
-                #     password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
-                #     port: 22
-                #     local_path: "rel/*.tar"
-                #     server: frs.sourceforge.net
-                #     remote_path: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+                - name: Upload to Sourceforge - tar
+                  continue-on-error: true
+                  uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+                  with: 
+                    username: "${{ secrets.SOURCEFORGE_USERNAME }}"
+                    password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
+                    port: 22
+                    local_path: "./rel/${{ github.event.inputs.NAME_ID }}.tar"
+                    server: frs.sourceforge.net
+                    remote_path: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
                 # IM MENTALLY INSANE -sftp dont work gdmt
 
@@ -445,54 +446,55 @@ jobs:
                 #     exclude: '.git*,universal,image_build,bin'
    
 
-                - name: Upload to Sourceforge - Tar
-                  uses: Dylan700/sftp-upload-action@latest
-                  continue-on-error: true
-                  with:
-                    server: sftp://frs.sourceforge.net
-                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
-                    port: 22
-                    uploads: |
-                        ./rel/${{ github.event.inputs.NAME_ID }}.tar => /home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}
-                    ignore: |
-                        *.git
-                        ./universal
-                        ./bin
-                        ./image_build
+                # - name: Upload to Sourceforge - Tar
+                #   uses: Dylan700/sftp-upload-action@latest
+                #   continue-on-error: true
+                #   with:
+                #     server: sftp://frs.sourceforge.net
+                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #     passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
+                #     port: 22
+                #     uploads: |
+                #         ./rel/${{ github.event.inputs.NAME_ID }}.tar => /home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}
+                #     ignore: |
+                #         *.git
+                #         ./universal
+                #         ./bin
+                #         ./image_build
 
-                - name: Upload to Sourceforge - Tar.xz
-                  uses: Dylan700/sftp-upload-action@latest
-                  continue-on-error: true
-                  with:
-                        server: sftp://frs.sourceforge.net
-                        username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                        password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                        passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
-                        port: 22
-                        uploads: |
-                            ./rel/${{ github.event.inputs.NAME_ID }}.tar.xz => /home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}
-                        ignore: |
-                            *.git
-                            ./universal
-                            ./bin
-                            ./image_build
+                # - name: Upload to Sourceforge - Tar.xz
+                #   uses: Dylan700/sftp-upload-action@latest
+                #   continue-on-error: true
+                #   with:
+                #         server: sftp://frs.sourceforge.net
+                #         username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                #         password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #         passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
+                #         port: 22
+                #         uploads: |
+                #             ./rel/${{ github.event.inputs.NAME_ID }}.tar.xz => /home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}
+                #         ignore: |
+                #             *.git
+                #             ./universal
+                #             ./bin
+                #             ./image_build
 
-                - name: Upload to Sourceforge - 7z
-                  uses: Dylan700/sftp-upload-action@latest
-                  continue-on-error: true
-                  with:
-                    server: sftp://frs.sourceforge.net
-                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
-                    port: 22
-                    uploads: |
-                        ./rel/${{ github.event.inputs.NAME_ID }}.7z => /home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}
-                    ignore: |
-                        *.git
-                        ./universal
-                        ./bin
-                        ./image_build
+                # - name: Upload to Sourceforge - 7z
+                #   uses: Dylan700/sftp-upload-action@latest
+                #   continue-on-error: true
+                #   with:
+                #     server: sftp://frs.sourceforge.net
+                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #     passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
+                #     port: 22
+                #     uploads: |
+                #         ./rel/${{ github.event.inputs.NAME_ID }}.7z => /home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}
+                #     ignore: |
+                #         *.git
+                #         ./universal
+                #         ./bin
+                #         ./image_build
 
+                
