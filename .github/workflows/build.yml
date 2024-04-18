@@ -400,6 +400,7 @@ jobs:
 
                 - name: Send to Sourceforge - TAR
                   uses: wangyucode/sftp-upload-action@v2.0.2
+                  continue-on-error: true
                   with:
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
@@ -412,6 +413,7 @@ jobs:
                 
                 - name: Send to Sourceforge - TAR.xz
                   uses: wangyucode/sftp-upload-action@v2.0.2
+                  continue-on-error: true
                   with:
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
@@ -425,6 +427,7 @@ jobs:
 
                 - name: Send to Sourceforge - 7z
                   uses: wangyucode/sftp-upload-action@v2.0.2
+                  continue-on-error: true
                   with:
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
