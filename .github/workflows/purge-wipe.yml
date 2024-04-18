@@ -1,0 +1,20 @@
+name: Purge Wipe Releases (if you want a breather)
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+jobs: 
+    test:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: Nats-ji/delete-old-releases@v1
+        with: 
+           token: ${{ secrets.GITHUB_TOKEN }}
+           keep-old-minor-releases: false
+           remove-tags: true
