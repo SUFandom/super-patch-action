@@ -310,33 +310,33 @@ jobs:
                         #    ;;
                     esac
 # DONT BLAME ME, BLAME THE CREATORS OF ARTIFACTS, NOT ALLOWING DIRECT FILE DETECTION UNLIKE GITHUB RELEASE
-                - name: Upload to Github Artifacts, tar
-                  continue-on-error: true
-                  uses: actions/upload-artifact@v4
-                  with: 
-                    name: ${{ github.event.inputs.NAME_REL }}
-                    path: |
-                        "rel/${{ github.event.inputs.NAME_ID }}.tar"
-                    compression-level: 9
+                # - name: Upload to Github Artifacts, tar
+                #   continue-on-error: true
+                #   uses: actions/upload-artifact@v4
+                #   with: 
+                #     name: ${{ github.event.inputs.NAME_REL }}
+                #     path: |
+                #         "rel/${{ github.event.inputs.NAME_ID }}.tar"
+                #     compression-level: 9
                 
-                - name: Upload to Github Artifacts, tar.xz
-                  continue-on-error: true
-                  uses: actions/upload-artifact@v4
-                  with: 
-                      name: ${{ github.event.inputs.NAME_REL }}
-                      path: |
-                          "rel/${{ github.event.inputs.NAME_ID }}.tar.xz"
-                      compression-level: 9
+                # - name: Upload to Github Artifacts, tar.xz
+                #   continue-on-error: true
+                #   uses: actions/upload-artifact@v4
+                #   with: 
+                #       name: ${{ github.event.inputs.NAME_REL }}
+                #       path: |
+                #           "rel/${{ github.event.inputs.NAME_ID }}.tar.xz"
+                #       compression-level: 9
 
 
-                - name: Upload to Github Artifacts, 7z
-                  continue-on-error: true
-                  uses: actions/upload-artifact@v4
-                  with: 
-                    name: ${{ github.event.inputs.NAME_REL }}
-                    path: |
-                        "rel/${{ github.event.inputs.NAME_ID }}.7z"
-                    compression-level: 9
+                # - name: Upload to Github Artifacts, 7z
+                #   continue-on-error: true
+                #   uses: actions/upload-artifact@v4
+                #   with: 
+                #     name: ${{ github.event.inputs.NAME_REL }}
+                #     path: |
+                #         "rel/${{ github.event.inputs.NAME_ID }}.7z"
+                #     compression-level: 9
 
                 - name: Upload to Github Releases
                   continue-on-error: true
@@ -398,7 +398,7 @@ jobs:
 
                 # IM MENTALLY INSANE
 
-                - name: Send to Sourceforge
+                - name: Send to Sourceforge - TAR
                   uses: wangyucode/sftp-upload-action@v2.0.2
                   with:
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
@@ -406,7 +406,32 @@ jobs:
                     host: frs.sourceforge.net
                     compress: false
                     forceUpload: true
-                    localDir: './rel/*${{ github.event.inputs.NAME_ID }}*'
+                    localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar'
+                    remoteDir: '/home/pfs/project/${{secrets.SOURCEFORGE_REPO_TARGET}}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    exclude: '.git*,universal,image_build,bin'
+                
+                - name: Send to Sourceforge - TAR.xz
+                  uses: wangyucode/sftp-upload-action@v2.0.2
+                  with:
+                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                    host: frs.sourceforge.net
+                    compress: false
+                    forceUpload: true
+                    localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar.xz'
+                    remoteDir: '/home/pfs/project/${{secrets.SOURCEFORGE_REPO_TARGET}}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    exclude: '.git*,universal,image_build,bin'
+                
+
+                - name: Send to Sourceforge - 7z
+                  uses: wangyucode/sftp-upload-action@v2.0.2
+                  with:
+                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                    host: frs.sourceforge.net
+                    compress: false
+                    forceUpload: true
+                    localDir: './rel/${{ github.event.inputs.NAME_ID }}.7z'
                     remoteDir: '/home/pfs/project/${{secrets.SOURCEFORGE_REPO_TARGET}}/${{ github.event.inputs.FOLDER_HEADING }}'
                     exclude: '.git*,universal,image_build,bin'
    
