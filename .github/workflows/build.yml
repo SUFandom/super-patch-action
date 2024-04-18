@@ -73,7 +73,7 @@ jobs:
                   run: |
                     sudo apt update
                     sudo apt upgrade -y
-                    sudo apt install p7zip* wget android-tools* lz4 zstd libprotobuf-dev brotli android-sdk-libsparse-utils
+                    sudo apt install p7zip* aria2 wget android-tools* lz4 zstd libprotobuf-dev brotli android-sdk-libsparse-utils
                     # IDK TF AM I DOING
                     pwd >> dir.txt
                     LOCATION_POINT=$(pwd)
@@ -138,7 +138,7 @@ jobs:
                     export PRODUCT="$DIR/product.img"
                     export VENDOR="$DIR/vendor.img"
                     export SUPER="$DIR/super.img"
-                    wget  ${{ github.event.inputs.TAR_SUPER }}
+                    aria2c -x 10 ${{ github.event.inputs.TAR_SUPER }}
                     tar -xf *.tar
                     mv super.img $DIR/
 
