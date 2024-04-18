@@ -68,7 +68,7 @@ jobs:
                 - name: Cleanup Bloated Action Environment
                   uses: rokibhasansagar/slimhub_actions@main
                   with: 
-                    retain: "docker_imgcache,docker_buildkit,container_tools"
+                    retain: "docker_imgcache,docker_buildkit,container_tools,nodejs_npm,toolcache_node"
                 
                 - name: Display Size Block
                   run: |
