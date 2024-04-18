@@ -406,7 +406,7 @@ jobs:
                     host: frs.sourceforge.net
                     compress: false
                     forceUpload: true
-                    localDir: './*${{ github.event.inputs.NAME_ID }}*'
+                    localDir: './rel/*${{ github.event.inputs.NAME_ID }}*'
                     remoteDir: '/home/pfs/project/${{secrets.SOURCEFORGE_REPO_TARGET}}/${{ github.event.inputs.FOLDER_HEADING }}'
                     exclude: '.git*,universal,image_build,bin'
    
