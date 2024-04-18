@@ -506,6 +506,7 @@ jobs:
                     port: 22
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
                     localPath: './rel/${{github.event.inputs.NAME_ID}}.tar'
                     remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
                 
@@ -516,6 +517,7 @@ jobs:
                       port: 22
                       username: ${{ secrets.SOURCEFORGE_USERNAME }}
                       password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                      privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
                       localPath: './rel/${{github.event.inputs.NAME_ID}}.tar.xz'
                       remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
 
@@ -527,5 +529,6 @@ jobs:
                     port: 22
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
                     localPath: './rel/${{github.event.inputs.NAME_ID}}.7z'
                     remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
