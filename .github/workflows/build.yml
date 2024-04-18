@@ -405,6 +405,7 @@ jobs:
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
                     host: frs.sourceforge.net
+                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
                     compress: false
                     forceUpload: true
                     localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar'
@@ -418,6 +419,7 @@ jobs:
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
                     host: frs.sourceforge.net
+                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
                     compress: false
                     forceUpload: true
                     localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar.xz'
