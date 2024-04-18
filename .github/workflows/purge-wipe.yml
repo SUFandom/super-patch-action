@@ -1,9 +1,7 @@
 name: Purge Wipe Releases (if you want a breather)
 
 on:
-    push:
-        branches: [master]
-    pull_request:
+    workflow_dispatch:
 jobs: 
     test:
         runs-on: ubuntu-latest
