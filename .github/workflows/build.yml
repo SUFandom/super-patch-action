@@ -449,7 +449,7 @@ jobs:
                   uses: Dylan700/sftp-upload-action@latest
                   continue-on-error: true
                   with:
-                    server: frs.sourceforge.net
+                    server: sftp://frs.sourceforge.net
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
                     passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -466,7 +466,7 @@ jobs:
                   uses: Dylan700/sftp-upload-action@latest
                   continue-on-error: true
                   with:
-                        server: frs.sourceforge.net
+                        server: sftp://frs.sourceforge.net
                         username: ${{ secrets.SOURCEFORGE_USERNAME }}
                         password: ${{ secrets.SOURCEFORGE_PASSWORD }}
                         passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -483,7 +483,7 @@ jobs:
                   uses: Dylan700/sftp-upload-action@latest
                   continue-on-error: true
                   with:
-                    server: frs.sourceforge.net
+                    server: sftp://frs.sourceforge.net
                     username: ${{ secrets.SOURCEFORGE_USERNAME }}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
                     passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
