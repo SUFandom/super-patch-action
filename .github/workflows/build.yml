@@ -404,48 +404,48 @@ jobs:
 
                 # IM MENTALLY INSANE -sftp dont work gdmt
 
-                - name: Send to Sourceforge - TAR
-                  uses: wangyucode/sftp-upload-action@v2.0.2
-                  continue-on-error: true
-                  with:
-                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    host: frs.sourceforge.net
-                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                    compress: false
-                    forceUpload: true
-                    localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar'
-                    remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                    exclude: '.git*,universal,image_build,bin'
+                # - name: Send to Sourceforge - TAR
+                #   uses: wangyucode/sftp-upload-action@v2.0.2
+                #   continue-on-error: true
+                #   with:
+                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #     host: frs.sourceforge.net
+                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+                #     compress: false
+                #     forceUpload: true
+                #     localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar'
+                #     remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                #     exclude: '.git*,universal,image_build,bin'
                 
-                - name: Send to Sourceforge - TAR.xz
-                  uses: wangyucode/sftp-upload-action@v2.0.2
-                  continue-on-error: true
-                  with:
-                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    host: frs.sourceforge.net
-                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                    compress: false
-                    forceUpload: true
-                    localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar.xz'
-                    remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                    exclude: '.git*,universal,image_build,bin'
+                # - name: Send to Sourceforge - TAR.xz
+                #   uses: wangyucode/sftp-upload-action@v2.0.2
+                #   continue-on-error: true
+                #   with:
+                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #     host: frs.sourceforge.net
+                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+                #     compress: false
+                #     forceUpload: true
+                #     localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar.xz'
+                #     remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                #     exclude: '.git*,universal,image_build,bin'
                 
 
-                - name: Send to Sourceforge - 7z
-                  uses: wangyucode/sftp-upload-action@v2.0.2
-                  continue-on-error: true
-                  with:
-                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    host: frs.sourceforge.net
-                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                    compress: false
-                    forceUpload: true
-                    localDir: './rel/${{ github.event.inputs.NAME_ID }}.7z'
-                    remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                    exclude: '.git*,universal,image_build,bin'
+                # - name: Send to Sourceforge - 7z
+                #   uses: wangyucode/sftp-upload-action@v2.0.2
+                #   continue-on-error: true
+                #   with:
+                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #     host: frs.sourceforge.net
+                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+                #     compress: false
+                #     forceUpload: true
+                #     localDir: './rel/${{ github.event.inputs.NAME_ID }}.7z'
+                #     remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                #     exclude: '.git*,universal,image_build,bin'
    
 
                 # - name: Upload to Sourceforge - Tar
@@ -499,4 +499,33 @@ jobs:
                 #         ./bin
                 #         ./image_build
 
+                - name: Upload to Sourceforge - tar
+                  uses: Creepios/sftp-action@v1.0.3
+                  with:
+                    host: frs.sourceforge.net
+                    port: 22
+                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                    localPath: './rel/${{github.event.inputs.NAME_ID}}.tar'
+                    remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
                 
+                - name: Upload to Sourceforge - tar.xz
+                  uses: Creepios/sftp-action@v1.0.3
+                  with:
+                      host: frs.sourceforge.net
+                      port: 22
+                      username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                      password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                      localPath: './rel/${{github.event.inputs.NAME_ID}}.tar.xz'
+                      remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
+
+
+                - name: Upload to Sourceforge - 7z
+                  uses: Creepios/sftp-action@v1.0.3
+                  with:
+                    host: frs.sourceforge.net
+                    port: 22
+                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                    localPath: './rel/${{github.event.inputs.NAME_ID}}.7z'
+                    remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
