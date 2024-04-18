@@ -37,6 +37,9 @@ on:
             FOLDER_HEADING:
                 description: 'Enter what directory it will land on Sourceforge (REQUIRES THAT DIRECTORY TO BE PRESENT THERE, DOUBLE CHECK IT PLEASE)'
                 required: true
+            PROJECT_ROOT_NAME:
+                description: 'Reading comprehension needed!: What project root name called: for SUFandom would be like this :https://sourceforge.net/projects/xynoxx-prebuilt-gsi:, so you stictly type : xynoxx-prebuilt-gsi : '
+                required: true
 
 jobs:
     Building-GSI:
@@ -438,6 +441,6 @@ jobs:
                     compress: false
                     forceUpload: true
                     localDir: './rel/${{ github.event.inputs.NAME_ID }}.7z'
-                    remoteDir: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
+                    remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
                     exclude: '.git*,universal,image_build,bin'
    
