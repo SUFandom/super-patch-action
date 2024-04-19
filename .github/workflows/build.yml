@@ -541,7 +541,7 @@ jobs:
                     username: ${{secrets.SOURCEFORGE_USERNAME}}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
                     local-dir: './rel/${{ github.event.inputs.NAME_ID }}.tar'
-                    server-dir: '/home/pfs/project${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
+                    server-dir: '/home/pfs/project${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
 
               
  
