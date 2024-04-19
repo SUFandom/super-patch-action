@@ -15,3 +15,8 @@ jobs:
                     token: ${{ secrets.GITHUB_TOKEN }}
                     keep-old-minor-releases: false
                     remove-tags: true
+                - name: wipe all tags because they are annoying asf
+                  uses: dev-drprasad/delete-tag-and-release@v1.1
+                  with: 
+                    tag_name: '*'
+                    github_token: ${{ secrets.GITHUB_TOKEN }}
