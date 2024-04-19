@@ -4,10 +4,10 @@ on:
     workflow_dispatch:
         inputs:
             TAR_SUPER:
-                description: 'Super Image, but in TAR'
+                description: 'Super Image, but in TAR Format'
                 required: false
             LZ4_SUPER:
-                description: 'Super Image, but in lz4'
+                description: 'Super Image, but in lz4 Format'
                 required: false
             SUPER_LOCATE:
                 description: 'Super Image Link, make sure its in super.img form, NOT IN SUPER.IMG.LZ4'
