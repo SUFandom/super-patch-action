@@ -337,7 +337,7 @@ jobs:
                   with: 
                     name: ${{ github.event.inputs.NAME_REL }}
                     path: |
-                        "rel/${{ github.event.inputs.NAME_ID }}.tar"
+                        "./rel/${{ github.event.inputs.NAME_ID }}.tar"
                     compression-level: 9
                 
                 - name: Upload to Github Artifacts, tar.xz
@@ -346,7 +346,7 @@ jobs:
                   with: 
                       name: ${{ github.event.inputs.NAME_REL }}
                       path: |
-                          "rel/${{ github.event.inputs.NAME_ID }}.tar.xz"
+                          "./rel/${{ github.event.inputs.NAME_ID }}.tar.xz"
                       compression-level: 9
 
 
@@ -356,7 +356,7 @@ jobs:
                   with: 
                     name: ${{ github.event.inputs.NAME_REL }}
                     path: |
-                        "rel/${{ github.event.inputs.NAME_ID }}.7z"
+                        "./rel/${{ github.event.inputs.NAME_ID }}.7z"
                     compression-level: 9
 
                 - name: Upload to Github Releases
