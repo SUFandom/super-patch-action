@@ -499,36 +499,50 @@ jobs:
                 #         ./bin
                 #         ./image_build
 
-                - name: Upload to Sourceforge - tar
-                  uses: Creepios/sftp-action@v1.0.3
-                  with:
-                    host: frs.sourceforge.net
-                    port: 22
-                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                    localPath: './rel/${{github.event.inputs.NAME_ID}}.tar'
-                    remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
+                # - name: Upload to Sourceforge - tar
+                #   uses: Creepios/sftp-action@v1.0.3
+                #   with:
+                #     host: frs.sourceforge.net
+                #     port: 22
+                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+                #     localPath: './rel/${{github.event.inputs.NAME_ID}}.tar'
+                #     remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
                 
-                - name: Upload to Sourceforge - tar.xz
-                  uses: Creepios/sftp-action@v1.0.3
-                  with:
-                      host: frs.sourceforge.net
-                      port: 22
-                      username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                      password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                      privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                      localPath: './rel/${{github.event.inputs.NAME_ID}}.tar.xz'
-                      remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
+                # - name: Upload to Sourceforge - tar.xz
+                #   uses: Creepios/sftp-action@v1.0.3
+                #   with:
+                #       host: frs.sourceforge.net
+                #       port: 22
+                #       username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                #       password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #       privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+                #       localPath: './rel/${{github.event.inputs.NAME_ID}}.tar.xz'
+                #       remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
 
 
-                - name: Upload to Sourceforge - 7z
-                  uses: Creepios/sftp-action@v1.0.3
-                  with:
-                    host: frs.sourceforge.net
-                    port: 22
-                    username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                    localPath: './rel/${{github.event.inputs.NAME_ID}}.7z'
-                    remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
+                # - name: Upload to Sourceforge - 7z
+                #   uses: Creepios/sftp-action@v1.0.3
+                #   with:
+                #     host: frs.sourceforge.net
+                #     port: 22
+                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
+                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+                #     localPath: './rel/${{github.event.inputs.NAME_ID}}.7z'
+                #     remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
+
+                - name: Add SSH key to agent (encrypted)
+                  run: |
+                    echo "${{secrets.SSH_PRIVATE_KEY}}" | tr -d '\r' > ssh_key  # Create temporary file with key
+                    chmod 600 ssh_key  # Set strict permissions
+                    eval "$(ssh-agent -s)"  # Start SSH agent
+                    ssh-add ssh_key  # Add key to agent
+                    # # Optional: Verify key addition (remove for production)
+                    # ssh-keygen -l
+                    rm ssh_key  # Remove temporary key file
+        
+                - name: Upload files to SourceForge with rsync
+                  run: |
+                    rsync -av -e "ssh -o StrictHostKeyChecking=no" "./rel/${{github.event.inputs.NAME_ID}}.tar" ${{ secrets.SOURCEFORGE_USERNAME }}@frs.sourceforge.net:/home/pfs/project/${{github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}
