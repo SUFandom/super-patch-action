@@ -112,14 +112,14 @@ jobs:
                     if [[ -n "$LOC_CMP" ]]; then
                         mkdir cmp_img
                         cd cmp_img
-                        aria2c -x 15 ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
+                        aria2c -x 10 ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
                         7za x *.xz
                         cp *.img system.img
                         cd ..
                     elif [[ -n "$LOC_XT" ]]; then
                         mkdir cmp_img
                         cd cmp_img
-                        aria2c -x 15 ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
+                        aria2c -x 10 ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
                         cp *.img system.img
                         cd ..
                     else
@@ -533,15 +533,24 @@ jobs:
                 #     localPath: './rel/${{github.event.inputs.NAME_ID}}.7z'
                 #     remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
 
-                - name: Deploy to Sourceforge via FTP
-                  uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-                  with:
-                    server: frs.sourceforge.net
-                    port: 22
-                    username: ${{secrets.SOURCEFORGE_USERNAME}}
-                    password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    local-dir: './rel/'
-                    server-dir: '/home/pfs/project${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
+                # - name: Deploy to Sourceforge via FTP
+                #   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+                #   with:
+                #     server: frs.sourceforge.net
+                #     port: 22
+                #     username: ${{secrets.SOURCEFORGE_USERNAME}}
+                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                #     local-dir: './rel/'
+                #     server-dir: '/home/pfs/project${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
 
-              
+                - name: Deploy to SourceForge
+                  uses: pressidium/lftp-mirror-action@v1
+                  with:
+                    host: frs.sourceforge.net
+                    port: 22
+                    user: ${{ secrets.SOURCEFORGE_USERNAME }}
+                    pass: ${{ secrets.SOURCEFORGE_PASSWORD }}
+                    localDir: './rel/'
+                    remoteDir: '/home/pfs/project${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
+
  
