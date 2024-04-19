@@ -77,6 +77,8 @@ Table:
 2. <a href=#upload>Upload</a>
 <br>
 3. <a href=#build>Build</a>
+<br>
+4. <a href=#report>Report</a>
 
 </div>
 
@@ -197,5 +199,14 @@ Set compression Types
 7. DONE!!!
 
 </p>
+
+</div>
+
+
+<div align=center>
+
+## Report
+
+Submit your bug report at issues, ill respond to them, and make a fix
 
 </div>
