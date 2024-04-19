@@ -47,7 +47,7 @@ I swear ill clean this up, in the coming updates of the script and make it easy 
 
 <div align=center>
 
-## Why is this
+### Why is this
 
 Yeah, what's the reason why this is the 'best' option of patching super.img?
 
@@ -62,6 +62,32 @@ Table:
 | NETWORK               	| Data Plan consuming                                                                                                                                                                                                                                                     	| ONE TIME UPLOAD BASE ASSETS, THEN YOU CAN JUST REUSE SUPER.IMG FILES, SAVING MORE DATA PLAN 	|
 
 
+
+</div>
+
+<div align=center>
+
+### Special Thanks to
+
+@rsuntk - Rissu/RissuProject - https://gitlab.com/Rissu-Projekt - For giving Sourceforge Ideas
+
+@pressidium - For LFTP Action Script - https://github.com/pressidium/lftp-mirror-action
+
+@github and @microsoft - For their azure service
+
+aria2
+
+@rokibhasansagar - Slimhub Action Script 
+
+docker
+
+@Takumi123x - who founded the idea of a script that can modify super.img - https://github.com/Takumi123x/rou
+
+@Physwizz - An Australian, on Telegram, the head of Exynos 850 Testing and Development, who gave support for this project
+
+@Kirithethird - A filipino who supported the core version of this, because they wanted a builder that is perfectly verbose of the process
+
+@TDD788 - TheDarkDeath788, who also contributed to Exynos 850 Testing and Development, also has some support on the core project - https://github.com/TDD788
 
 </div>
 
