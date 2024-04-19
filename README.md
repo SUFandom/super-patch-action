@@ -45,6 +45,28 @@ and the source structure is uhhhhhhh:
 
 I swear ill clean this up, in the coming updates of the script and make it easy to use at least
 
+<div align=center>
+
+## Why is this
+
+Yeah, what's the reason why this is the 'best' option of patching super.img?
+
+Table:
+
+| Conditions            	| SUPER-PATCH [LOCAL]                                                                                                                                                                                                                                                     	| **THE ALL NEW SUPER-PATCH-ACTIONS**                                                         	|
+|-----------------------	|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|---------------------------------------------------------------------------------------------	|
+| Hardware Requirements 	| **Linux**<br><br>- 4GB OF RAM WITH 128GB OR MORE **SSD** RECOMMENDED, **AMD64 ONLY**<br><br>**WINDOWS**<br><br>- 8GB OF RAM + WSL 2 (Core i3, 7th Gen or Later), **SSD ONLY**<br><br>**ANDROID**<br><br>- (64 BIT ONLY) 4GB OF RAM + ARM CORTEX A55 OR LATER, 128GB STORAGE 	| Just fast Internet, and a supported Web3 Browser, LMAO                                      	|
+| STORAGE               	| 128GB AS MINIMUM, DESKTOP (SATA/NVMe SSD ONLY, FOR WINDOWS), (eMMC, SATA, NVME FOR LINUX)                                                                                                                                                                               	| 15-20GB ONLY                                                                                	|
+| TIME BUILD            	| 13 Mins at Max                                                                                                                                                                                                                                                          	| 7 Min to 10 Min at Max                                                                      	|
+| SHARE YOUR BUILD      	| REQUIRES UPLOADING, THEN SHARING LINK FOR ONLY THAT BUILD                                                                                                                                                                                                               	| LISTS AVAILABLE IN JUST ONE LINK                                                            	|
+| NETWORK               	| Data Plan consuming                                                                                                                                                                                                                                                     	| ONE TIME UPLOAD BASE ASSETS, THEN YOU CAN JUST REUSE SUPER.IMG FILES, SAVING MORE DATA PLAN 	|
+
+
+
+</div>
+
+
+
 </div>
 
 <div align=center>
@@ -101,6 +123,7 @@ The red line must be the same as the target
 7.4. After creating the username, create another secret, called <code>SOURCEFORGE_PASSWORD</code>
 <br>
 7.5. Enter your password there, don't worry, your credentials are safe and non-duplicate
+7.6. Create another secret, name it: <code>SOURCEFORGE_REPO_TARGET</code>, see 6.2.1, copy and paste that red line
 <br>
 8. and you are Done
 </p>
@@ -136,7 +159,43 @@ The red line must be the same as the target
 
 ## Build
 
-Here is your CVS Recipt MF
+Here is your CVS Recipt, People!
 
+<img src=images/another-cvs-recipt.png>
+
+<p align=left>
+1. Copy the link of uploaded super file, can be tar, lz4, or img file, just put them in the respective boxes, and only one of them are allowed, REMEMBER THAT AND STOP SENDING ISSUE PAGE ABOUT IT
+<br>
+2. enter what archive name you want it to be called, Default: <code>GSI-build-proto</code>
+3. Compression Type:
+<br>
+Note: setting to uncompressed, wont apply any name u entered, just <code>super.img</code>
+<br>
+Another note: Selecting all, can have issues pushing to artifact, or releases , check the sourceforge instead
+<br>
+<br>
+Set compression Types
+<br>
+- Tar (No compression, but contained, available in sourceforge)
+<br>
+- xz (Level 9 compression Type, can be on artifact build, releases, or sourceforge)
+<br>
+- 7z (a bit larger than xz but can be available on artifact, releases, and sourceforge)
+<br>
+- raw (super.img only)
+<br>
+- all (name says so, but some only available on artifacts and releases, while fully available on sourceforge)
+<br>
+4.1. Set GSI Link in img format, just copy and paste the source link, similar method to internet archive 
+<br>
+4.2. Set GSI link, compressed to .xz, commonly found on Phhusson's partner releases, just copy download link and paste it here, if there's an issue, please download manually, upload it and copy and paste a proper link.
+<br>
+5.Enter what directory subfolder, if you created a folder there (Sourceforge), type the folder there and add slash at the end, like: <code>FOLDER/</code>
+<br>
+6. Build!
+<br>
+7. DONE!!!
+
+</p>
 
 </div>
