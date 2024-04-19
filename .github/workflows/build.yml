@@ -536,7 +536,7 @@ jobs:
                 - name: Deploy to Sourceforge via FTP
                   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
                   with:
-                    server: sftp.frs.sourceforge.net
+                    server: frs.sourceforge.net
                     port: 22
                     username: ${{secrets.SOURCEFORGE_USERNAME}}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
