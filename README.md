@@ -21,6 +21,16 @@ No Linux, or WSL, or Termux Needed!
 [![alttext](https://img.shields.io/badge/-Check_us_on_Telegram,_Exynos_850_Testing_&_Development_By_Clicking_me-yellow?style=for-the-badge&logo=Telegram)](https://t.me/a12schat)
 
 *thats a **LOT** of Badges*
+
+<!-- Begin SF Tag -->
+<div class="sf-root" data-id="3748765" data-badge="oss-users-love-us-white" style="width:125px">
+    <a href="https://sourceforge.net/projects/xynoxx-prebuilt-gsi/" target="_blank">Xynoxx Prebuilt GSI</a>
+</div>
+<script>(function () {var sc=document.createElement('script');sc.async=true;sc.src='https://b.sf-syn.com/badge_js?sf_id=3748765';var p=document.getElementsByTagName('script')[0];p.parentNode.insertBefore(sc, p);})();
+</script>
+<!-- End SF Tag -->
+
+
 </div>
 
 ----
