@@ -533,14 +533,14 @@ jobs:
                 #     localPath: './rel/${{github.event.inputs.NAME_ID}}.7z'
                 #     remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
 
-                - name: Deploy to Sourceforge via FTP - tar
+                - name: Deploy to Sourceforge via FTP
                   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
                   with:
                     server: sftp.frs.sourceforge.net
                     port: 22
                     username: ${{secrets.SOURCEFORGE_USERNAME}}
                     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    local-dir: './rel/${{ github.event.inputs.NAME_ID }}.tar'
+                    local-dir: './rel/'
                     server-dir: '/home/pfs/project${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
 
               
