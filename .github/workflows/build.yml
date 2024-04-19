@@ -15,16 +15,18 @@ on:
             NAME_ID:
                 description: 'What you want to call the finished product'
                 required: true
-                default: 'extract'
+                default: 'GSI-Build-proto'
             COMPRESSION_CHOICE:
                 description: 'Contain the image? (other types of compression coming soon)'
                 required: true
-                default: 'yes-tar'
+                default: 'xz'
                 type: choice
                 options:
                     - 'tar'
                     - 'xz'
                     - '7z'
+                    - 'uncompressed'
+                    - all (tar,tar.gz,7z,uncompressed)
             GSI_IMG_LOCATION_XT:
                 description: 'Enter GSI Link (Extracted, img only, NO SPACES!)'
                 required: false
@@ -143,7 +145,7 @@ jobs:
                     export PRODUCT="$DIR/product.img"
                     export VENDOR="$DIR/vendor.img"
                     export SUPER="$DIR/super.img"
-                    aria2c -x 15 ${{ github.event.inputs.TAR_SUPER }}
+                    aria2c -x 10 ${{ github.event.inputs.TAR_SUPER }}
                     tar -xf *.tar
                     mv super.img $DIR/
 
@@ -162,7 +164,7 @@ jobs:
                    export SYSTEM_EXT="$DIR/system_ext.img"
                    export VENDOR="$DIR/vendor.img"
                    export SUPER="$DIR/super.img"
-                   aria2c -x 15 ${{ github.event.inputs.LZ4_SUPER }}
+                   aria2c -x 10 ${{ github.event.inputs.LZ4_SUPER }}
                    lz4 super.img.lz4
                    mv super.img $DIR/
 
@@ -181,7 +183,7 @@ jobs:
                     export SYSTEM_EXT="$DIR/system_ext.img"
                     export VENDOR="$DIR/vendor.img"
                     export SUPER="$DIR/super.img"
-                    aria2c -x 15 ${{ github.event.inputs.SUPER_LOCATE }}
+                    aria2c -x 10 ${{ github.event.inputs.SUPER_LOCATE }}
                     mv super.img $(pwd)/image_build/
 
                 - name: Indexing Files
@@ -310,47 +312,61 @@ jobs:
                             7za a -mx=9 "$(pwd)/$NAME_CHOICE.7z" image_build/super.img
                             cp $NAME_CHOICE.7z rel/
                             ;;
-                        # "uncompressed")
-                        #     echo "Bruh, ok"
-                        #    ;;
+                        "uncompressed")
+                            echo "Bruh, ok"
+                            cp image_build/super.img rel/super.img
+                           ;;
+                        "all (tar,tar.gz,7z,uncompressed)")
+                            echo "This process will take longer than usual"
+                            echo "Compressing to TAR"
+                            tar -cvf "$(pwd)/$NAME_CHOICE.tar" image_build/super.img
+                            cp $NAME_CHOICE.tar rel/
+                            echo "     ...Next, tar.xz"
+                            tar --xz -Jcvf "$(pwd)/$NAME_CHOICE.tar.xz" image_build/super.img
+                            cp $NAME_CHOICE.tar.xz rel/
+                            echo "     ...Next, 7z"
+                            7za a -mx=9 "$(pwd)/$NAME_CHOICE.7z" image_build/super.img
+                            cp $NAME_CHOICE.7z rel/
+                            echo "     ...Next, Uncompressed"
+                            cp image_build/super.img rel/
                     esac
 # DONT BLAME ME, BLAME THE CREATORS OF ARTIFACTS, NOT ALLOWING DIRECT FILE DETECTION UNLIKE GITHUB RELEASE
-                # - name: Upload to Github Artifacts, tar
-                #   continue-on-error: true
-                #   uses: actions/upload-artifact@v4
-                #   with: 
-                #     name: ${{ github.event.inputs.NAME_REL }}
-                #     path: |
-                #         "rel/${{ github.event.inputs.NAME_ID }}.tar"
-                #     compression-level: 9
+                - name: Upload to Github Artifacts, tar
+                  continue-on-error: true
+                  uses: actions/upload-artifact@v4
+                  with: 
+                    name: ${{ github.event.inputs.NAME_REL }}
+                    path: |
+                        "rel/${{ github.event.inputs.NAME_ID }}.tar"
+                    compression-level: 9
                 
-                # - name: Upload to Github Artifacts, tar.xz
-                #   continue-on-error: true
-                #   uses: actions/upload-artifact@v4
-                #   with: 
-                #       name: ${{ github.event.inputs.NAME_REL }}
-                #       path: |
-                #           "rel/${{ github.event.inputs.NAME_ID }}.tar.xz"
-                #       compression-level: 9
+                - name: Upload to Github Artifacts, tar.xz
+                  continue-on-error: true
+                  uses: actions/upload-artifact@v4
+                  with: 
+                      name: ${{ github.event.inputs.NAME_REL }}
+                      path: |
+                          "rel/${{ github.event.inputs.NAME_ID }}.tar.xz"
+                      compression-level: 9
 
 
-                # - name: Upload to Github Artifacts, 7z
-                #   continue-on-error: true
-                #   uses: actions/upload-artifact@v4
-                #   with: 
-                #     name: ${{ github.event.inputs.NAME_REL }}
-                #     path: |
-                #         "rel/${{ github.event.inputs.NAME_ID }}.7z"
-                #     compression-level: 9
+                - name: Upload to Github Artifacts, 7z
+                  continue-on-error: true
+                  uses: actions/upload-artifact@v4
+                  with: 
+                    name: ${{ github.event.inputs.NAME_REL }}
+                    path: |
+                        "rel/${{ github.event.inputs.NAME_ID }}.7z"
+                    compression-level: 9
 
                 - name: Upload to Github Releases
                   continue-on-error: true
                   uses: softprops/action-gh-release@v2
                   with:
                         files: |
-                            *.tar
-                            *.tar.xz
-                            *.7z
+                            rel/*.tar
+                            rel/*.tar.xz
+                            rel/*.7z
                         name: ${{ github.event.inputs.NAME_REL }} - ${{ github.run_id }}
                         tag_name: ${{ github.run_id }}
                         body: |
@@ -359,7 +375,10 @@ jobs:
                                 - Compressed: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
                                 - Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
                             Link to SourceForge: https://sourceforge.net/projects/xynoxx-prebuilt-gsi
+                            Build Method: ${{ github.event.inputs.COMPRESSION_CHOICE }}
                             Note: If there's nothing here, then the Build was too big for Github Releases to acknowledge, visit SourceForge Instead
+
+                            Recommend: Please Decompress/Extract the super.img file then flash it to your device
                   env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 
@@ -551,6 +570,6 @@ jobs:
                     user: ${{ secrets.SOURCEFORGE_USERNAME }}
                     pass: ${{ secrets.SOURCEFORGE_PASSWORD }}
                     localDir: './rel/'
-                    remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
+                    remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
 
  
