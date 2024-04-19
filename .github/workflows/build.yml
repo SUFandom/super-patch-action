@@ -541,7 +541,7 @@ jobs:
                 #     username: ${{secrets.SOURCEFORGE_USERNAME}}
                 #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
                 #     local-dir: './rel/'
-                #     server-dir: '/home/pfs/project${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
+                #     server-dir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
 
                 - name: Deploy to SourceForge
                   uses: pressidium/lftp-mirror-action@v1
@@ -551,6 +551,6 @@ jobs:
                     user: ${{ secrets.SOURCEFORGE_USERNAME }}
                     pass: ${{ secrets.SOURCEFORGE_PASSWORD }}
                     localDir: './rel/'
-                    remoteDir: '/home/pfs/project${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
+                    remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
 
  
