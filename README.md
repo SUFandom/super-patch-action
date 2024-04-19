@@ -29,7 +29,7 @@ No Linux, or WSL, or Termux Needed!
 <div align=center> 
 <h3>What is this?</h3>
 
-This is a repository that can make your inserting your favourite ROM to your samsung device, best, with no more pesky hardware requirements, " *looking at you, super-patch with no proper WSL support* "
+This is a repository that can make your inserting your favourite ROM to your samsung device, best, with no more pesky hardware requirements, " *looking at you, super-patch with no proper WSL1 support* "
 
 Right now, the options are very confusing at best:
 
