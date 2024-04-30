@@ -10,7 +10,7 @@ No Linux, or WSL, or Termux Needed!
 <div align=center>
 <h3>Badges</h3>
 
-![alttext](https://img.shields.io/static/v1?label=Status&message=Working&color=brightgreen) ![alttext](https://img.shields.io/badge/Version-v0.1-blue) ![alttext](https://img.shields.io/badge/SFTP_to_SourceForge-GOOD-BrightGreen?style=flat&logo=Sourceforge) 
+![alttext](https://img.shields.io/static/v1?label=Status&message=Working&color=brightgreen) ![alttext](https://img.shields.io/badge/Version-v0.2-blue) ![alttext](https://img.shields.io/badge/SFTP_to_SourceForge-GOOD-BrightGreen?style=flat&logo=Sourceforge) 
 
 [![alttext](https://img.shields.io/badge/-Visit_SUFandom/Xynoxx's_SourceForge_By_clicking_ME-blue?style=for-the-badge&logo=Sourceforge&logoColor=f5f5f5)](https://sourceforge.net/projects/xynoxx-prebuilt-gsi/files/) 
 
