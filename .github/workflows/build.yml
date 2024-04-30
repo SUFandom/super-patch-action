@@ -278,8 +278,8 @@ jobs:
                         else 
                             cp -rf universal/product.img $DIR/product.img
                         fi
-                        if [  -e "$DIR/system_ext.img" ]; then
-                            echo ""
+                        if [ !  -e "$DIR/system_ext.img" ]; then
+                            cp -rf universal/system_ext.img $DIR/product.img
                         else 
                             cp -rf universal/system_ext.img $DIR/product.img
                         fi 
