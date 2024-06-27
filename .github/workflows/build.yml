@@ -3,12 +3,6 @@ name: Patch GSI to Samsung Super Image v.0.1
 on:
     workflow_dispatch:
         inputs:
-            TAR_SUPER:
-                description: 'Super Image, but in TAR Format'
-                required: false
-            LZ4_SUPER:
-                description: 'Super Image, but in lz4 Format'
-                required: false
             SUPER_LOCATE:
                 description: 'Super Image Link, make sure its in super.img form, NOT IN SUPER.IMG.LZ4'
                 required: false
@@ -87,491 +81,212 @@ jobs:
                     echo $LOCATION_POINT
                 
                 - name: Grab Utils
-                  run: |
-                    mkdir bin
-                    cd bin
-                    wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpadd
-                    wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpdump
-                    wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpmake
-                    wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpunpack
-                    chmod +x *
-                    sudo cp * /usr/bin/
-                    cd ..
-                    mkdir universal
-                    cd universal
-                    wget https://github.com/SUFandom/super-patch/raw/main/fake-props/product.img
-                    wget https://github.com/SUFandom/super-patch/raw/main/fake-props/system_ext.img
-                    cd ..
+name: Patch-GSI-to-Samsung-Super-Image
 
-                - name: Grabbing Images
-                  run: |
-                    LOC_CMP="${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}"
-                    LOC_XT="${{ github.event.inputs.GSI_IMG_LOCATION_XT }}"
-                    if [[ -n "$LOC_CMP" ]] && [[ -n "$LOC_XT" ]]; then
-                    echo "Only One variable are allowed"
-                    exit 1
-                    fi
-                    if [[ -n "$LOC_CMP" ]]; then
-                        mkdir cmp_img
-                        cd cmp_img
-                        aria2c -x 10 ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
-                        7za x *.xz
-                        cp *.img system.img
-                        cd ..
-                    elif [[ -n "$LOC_XT" ]]; then
-                        mkdir cmp_img
-                        cd cmp_img
-                        aria2c -x 10 ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
-                        cp *.img system.img
-                        cd ..
-                    else
-                        echo "Error, Empty INPUT"
-                        exit 1
-                    fi
-                
-                
-                - name: Grabbing Super Image - TAR
-                  if: |
-                      github.event.inputs.TAR_SUPER != null
-                      && github.event.inputs.SUPER_LOCATE == null
-                      && github.event.inputs.LZ4_SUPER == null
-                  run: |
-                    echo "Preparing"
-                    mkdir image_build
-                    export DIR="$(pwd)/image_build"
-                    export ODM="$DIR/odm.img"
-                    export SYSTEM="$DIR/system.img"
-                    export SYSTEM_EXT="$DIR/system_ext.img"
-                    export PRODUCT="$DIR/product.img"
-                    export VENDOR="$DIR/vendor.img"
-                    export SUPER="$DIR/super.img"
-                    aria2c -x 10 ${{ github.event.inputs.TAR_SUPER }}
-                    tar -xf *.tar
-                    mv super.img $DIR/
+on:
+  workflow_dispatch:
+    inputs:
+      SUPER_LOCATE:
+        description: 'Super Image Link (super.img)'
+        required: true
+      NAME_ID:
+        description: 'Name for the finished product'
+        required: true
+        default: 'GSI-Build-proto'
+      COMPRESSION_CHOICE:
+        description: 'Compression method for the image'
+        required: true
+        default: 'xz'
+        type: choice
+        options:
+          - 'tar'
+          - 'xz'
+          - '7z'
+          - 'uncompressed'
+          - 'all (tar,tar.xz,7z,uncompressed)'
+      GSI_IMG_LOCATION_XT:
+        description: 'GSI Image Link (extracted, img only, no spaces)'
+        required: false
+      GSI_IMG_LOCATION_CMP:
+        description: 'GSI Image Link (compressed into .xz)'
+        required: false
+      NAME_REL:
+        description: 'Name for GitHub Release'
+        required: true
+      FOLDER_HEADING:
+        description: 'Directory on SourceForge where it will land (must be present)'
+        required: true
 
-                - name: Grabbing Super Image - LZ4
-                  if: |
-                   github.event.inputs.TAR_SUPER == null
-                   && github.event.inputs.SUPER_LOCATE == null
-                   && github.event.inputs.LZ4_SUPER != null
-                  run: |
-                   echo "Preparing"
-                   mkdir image_build
-                   export DIR="$(pwd)/image_build"
-                   export PRODUCT="$DIR/product.img"
-                   export ODM="$DIR/odm.img"
-                   export SYSTEM="$DIR/system.img"
-                   export SYSTEM_EXT="$DIR/system_ext.img"
-                   export VENDOR="$DIR/vendor.img"
-                   export SUPER="$DIR/super.img"
-                   aria2c -x 10 ${{ github.event.inputs.LZ4_SUPER }}
-                   lz4 super.img.lz4
-                   mv super.img $DIR/
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Session Parameters
+        run: |
+          echo "::group::User Environment Variables"
+          echo "Super Location: ${{ github.event.inputs.SUPER_LOCATE }}"
+          echo "Name ID: ${{ github.event.inputs.NAME_ID }}"
+          echo "Compression Choice: ${{ github.event.inputs.COMPRESSION_CHOICE }}"
+          echo "GSI IMG Location in Extracted Form: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}"
+          echo "GSI IMG Location in Compressed form: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}"
+          echo "Name REL: ${{ github.event.inputs.NAME_REL }}"
+          echo "Heading: ${{ github.event.inputs.FOLDER_HEADING }}"
+          echo "::endgroup::"
 
-                - name: Grabbing Super Image
-                  if:
-                    github.event.inputs.TAR_SUPER == null
-                    && github.event.inputs.SUPER_LOCATE != null
-                    && github.event.inputs.LZ4_SUPER == null
-                  run: |
-                    echo "Preparing"
-                    mkdir image_build
-                    export DIR="$(pwd)/image_build"
-                    export PRODUCT="$DIR/product.img"
-                    export ODM="$DIR/odm.img"
-                    export SYSTEM="$DIR/system.img"
-                    export SYSTEM_EXT="$DIR/system_ext.img"
-                    export VENDOR="$DIR/vendor.img"
-                    export SUPER="$DIR/super.img"
-                    aria2c -x 10 ${{ github.event.inputs.SUPER_LOCATE }}
-                    mv super.img $(pwd)/image_build/
+      - name: Check Out Repository
+        uses: actions/checkout@v2
 
-                - name: Indexing Files
-                  run: |
-                   # Tryna make sure lol
-                   export DIR="$(pwd)/image_build"
-                   export ODM="$DIR/odm.img"
-                   export PRODUCT="$DIR/product.img"
-                   export SYSTEM="$DIR/system.img"
-                   export SYSTEM_EXT="$DIR/system_ext.img"
-                   export VENDOR="$DIR/vendor.img"
-                   export SUPER="$DIR/super.img"
-                   # Add some temps
-                   export TMP_ENVIRO="$(pwd)/tmp"
-                   mkdir tmp
-                   if [ -e "$DIR/super.img" ]; then
-                    simg2img $DIR/super.img $DIR/super_raw.img
-                    if [ -e "$DIR/super_raw.img" ]; then
-                        if [ "$(ls -nl "$DIR/super_raw.img" | awk '{print $5}')" -lt 100000 ]; then
-                            rm -rf super_raw.img
-                            lpdump $DIR/super.img > $TMP_ENVIRO/super_map.txt
-                            printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Size:" | awk '{print $2}' > $TMP_ENVIRO/super_size.txt
-                            printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Maximum size:" | awk '{print $3}' | sed '2!d' > $TMP_ENVIRO/super_main.txt
-                            lpunpack $DIR/super.img $DIR/
-                        else
-                            rm -rf $DIR/super.img
-                            lpdump $DIR/super_raw.img > $TMP_ENVIRO/super_map.txt
-                            printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Size:" | awk '{print $2}' > $TMP_ENVIRO/super_size.txt
-                            printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Maximum size:" | awk '{print $3}' | sed '2!d' > $TMP_ENVIRO/super_main.txt
-                            lpunpack $DIR/super_raw.img $DIR/
-                        fi
-                    else
-                        echo "Super.img is corrupted"
-                        exit 1
-                   fi
-                   fi
-                
-                - name: Editing the Super.img
-                  run: |
-                   # Tryna make sure lol
-                   export DIR="$(pwd)/image_build"
-                   export ODM="$DIR/odm.img"
-                   export SYSTEM="$DIR/system.img"
-                   export PRODUCT="$DIR/product.img"
-                   export SYSTEM_EXT="$DIR/system_ext.img"
-                   export VENDOR="$DIR/vendor.img"
-                   export SUPER="$DIR/super.img"
-                   # Add some temps
-                   export TMP_ENVIRO="$(pwd)/tmp"
-                   rm -rf $SYSTEM
-                   mv cmp_img/system.img $SYSTEM
-                   if [ "$(ls -nl "$SYSTEM" | awk '{print $5}')" -lt 100000 ]; then 
-                    echo "Invalid size for a GSI"
-                    exit 1
-                    fi
-                    cp universal/* $DIR/
-                   
-                - name: Building the whole Super.img
-                  run: |
-                   # Tryna make sure lol
-                   export DIR="$(pwd)/image_build"
-                   export ODM="$DIR/odm.img"
-                   export PRODUCT="$DIR/product.img"
-                   export SYSTEM="$DIR/system.img"
-                   export SYSTEM_EXT="$DIR/system_ext.img"
-                   export VENDOR="$DIR/vendor.img"
-                   export SUPER="$DIR/super.img"
-                   # Add some temps
-                   export TMP_ENVIRO="$(pwd)/tmp"
-                   rm -rf $SUPER
-                   if [ "$(find $DIR/system.img -type f ! -size 0 -printf '%S\n' | sed 's/.\.[0-9]*//')" == 1 ]; then
-                        echo "PRC"
-                   else
-                        simg2img $DIR/system.img $DIR/system.raw.img
-                   fi
-                   if [ -e "$DIR/odm.img" ]; then
-                        if [ -e "$DIR/product.img" ]; then
-                            if [ "$(ls -nl $DIR/product.img | awk '{print $5}')" -gt 6000 ]; then 
-                                cp -urf universal/product.img $DIR/product.img
-                            fi
-                        else
-                            cp -urf universal/product.img $DIR/product.img
-                        fi
-                        cp universal/product.img $PRODUCT
-                        lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:$(<$TMP_ENVIRO/super_size.txt) --group main:$(<$TMP_ENVIRO/super_main.txt) --partition system:readonly:$(ls -nl $DIR/system.img | awk '{print $5}'):main --image system=$DIR/system.img --partition vendor:readonly:$(ls -nl $DIR/vendor.img | awk '{print $5}'):main --image vendor=$DIR/vendor.img --partition product:readonly:$(ls -nl $DIR/product.img | awk '{print $5}'):main --image product=$DIR/product.img --partition odm:readonly:$(ls -nl $DIR/odm.img | awk '{print $5}'):main --image odm=$DIR/odm.img --sparse --output $DIR/super.img
-                   else
-                        if [ -e "$DIR/product.img" ]; then 
-                             if [ "$(ls -nl $DIR/product.img | awk '{print $5}')" -gt 6000 ]; then
-                                cp -urf universal/product.img $DIR/product.img
-                                cp universal/product.img $PRODUCT
-                             fi
-                        else 
-                            cp -urf universal/product.img $DIR/product.img
-                        fi
-                        if [ !  -e "$DIR/system_ext.img" ]; then
-                            cp -urf universal/system_ext.img $DIR/product.img
-                        else 
-                            cp -urf universal/system_ext.img $DIR/product.img
-                        fi 
-                        lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:$(<$TMP_ENVIRO/super_size.txt) --group main:$(<$TMP_ENVIRO/super_main.txt) --partition system:readonly:$(ls -nl $DIR/system.img | awk '{print $5}'):main --image system=$DIR/system.img --partition vendor:readonly:$(ls -nl $DIR/vendor.img | awk '{print $5}'):main --image vendor=$DIR/vendor.img --partition product:readonly:$(ls -nl $DIR/product.img | awk '{print $5}'):main --image product=$DIR/product.img --partition system_ext:readonly:$(ls -nl $DIR/system_ext.img | awk '{print $5}'):main --image system_ext=$DIR/system_ext.img --sparse --output $DIR/super.img
-                    fi
+      - name: Cleanup Environment
+        run: |
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install p7zip* aria2 wget android-tools* lz4 rsync zstd libprotobuf-dev brotli android-sdk-libsparse-utils
 
-                - name: Packing the image
-                  run: |
-                   # Tryna make sure lol
-                   export DIR="$(pwd)/image_build"
-                   export PRODUCT="$DIR/product.img"
-                   export ODM="$DIR/odm.img"
-                   export SYSTEM="$DIR/system.img"
-                   export SYSTEM_EXT="$DIR/system_ext.img"
-                   export VENDOR="$DIR/vendor.img"
-                   export SUPER="$DIR/super.img"
-                   # Add some temps
-                   export TMP_ENVIRO="$(pwd)/tmp"
-                   export SELECT_SLIDER="${{ github.event.inputs.COMPRESSION_CHOICE }}"
-                   export NAME_CHOICE="${{ github.event.inputs.NAME_ID }}"
-                   mkdir rel
-                    case "$SELECT_SLIDER" in
-                        "tar")
-                            tar -cvf "$(pwd)/$NAME_CHOICE.tar" image_build/super.img
-                            cp $NAME_CHOICE.tar rel/
-                            ;;
-                        "xz")
-                            tar --xz -Jcvf "$(pwd)/$NAME_CHOICE.tar.xz" image_build/super.img
-                            cp $NAME_CHOICE.tar.xz rel/
-                            ;;
-                        "7z")
-                            7za a -mx=9 "$(pwd)/$NAME_CHOICE.7z" image_build/super.img
-                            cp $NAME_CHOICE.7z rel/
-                            ;;
-                        "uncompressed")
-                            echo "Bruh, ok"
-                            cp image_build/super.img rel/super.img
-                           ;;
-                        "all (tar,tar.gz,7z,uncompressed)")
-                            echo "This process will take longer than usual"
-                            echo "Compressing to TAR"
-                            tar -cvf "$(pwd)/$NAME_CHOICE.tar" image_build/super.img
-                            cp $NAME_CHOICE.tar rel/
-                            echo "     ...Next, tar.xz"
-                            tar --xz -Jcvf "$(pwd)/$NAME_CHOICE.tar.xz" image_build/super.img
-                            cp $NAME_CHOICE.tar.xz rel/
-                            echo "     ...Next, 7z"
-                            7za a -mx=9 "$(pwd)/$NAME_CHOICE.7z" image_build/super.img
-                            cp $NAME_CHOICE.7z rel/
-                            echo "     ...Next, Uncompressed"
-                            cp image_build/super.img rel/
-                    esac
-# DONT BLAME ME, BLAME THE CREATORS OF ARTIFACTS, NOT ALLOWING DIRECT FILE DETECTION UNLIKE GITHUB RELEASE
-                - name: Upload to Github Artifacts, tar
-                  continue-on-error: true
-                  uses: actions/upload-artifact@v4
-                  with: 
-                    name: ${{ github.event.inputs.NAME_REL }}
-                    path: |
-                        "rel/${{ github.event.inputs.NAME_ID }}.tar"
-                    compression-level: 9
-                
-                - name: Upload to Github Artifacts, tar.xz
-                  continue-on-error: true
-                  uses: actions/upload-artifact@v4
-                  with: 
-                      name: ${{ github.event.inputs.NAME_REL }}
-                      path: |
-                          "rel/${{ github.event.inputs.NAME_ID }}.tar.xz"
-                      compression-level: 9
+      - name: Download Utils
+        run: |
+          mkdir bin
+          cd bin
+          wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpadd
+          wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpdump
+          wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpmake
+          wget https://github.com/SUFandom/super-patch/raw/main/packages/amd64/lpunpack
+          chmod +x *
+          sudo cp * /usr/bin/
+          cd ..
+          mkdir -p universal
+          cd universal
+          wget https://github.com/SUFandom/super-patch/raw/main/fake-props/product.img
+          wget https://github.com/SUFandom/super-patch/raw/main/fake-props/system_ext.img
+          cd ..
 
+      - name: Download GSI Image
+        run: |
+          if [ -n "${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}" ]; then
+            aria2c -x 10 "${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}" -d image_build
+          elif [ -n "${{ github.event.inputs.GSI_IMG_LOCATION_XT }}" ]; then
+            aria2c -x 10 "${{ github.event.inputs.GSI_IMG_LOCATION_XT }}" -d image_build
+          fi
 
-                - name: Upload to Github Artifacts, 7z
-                  continue-on-error: true
-                  uses: actions/upload-artifact@v4
-                  with: 
-                    name: ${{ github.event.inputs.NAME_REL }}
-                    path: |
-                        "rel/${{ github.event.inputs.NAME_ID }}.7z"
-                    compression-level: 9
+      - name: Index Files
+        run: |
+          export DIR="$(pwd)/image_build"
+          export ODM="$DIR/odm.img"
+          export PRODUCT="$DIR/product.img"
+          export SYSTEM="$DIR/system.img"
+          export SYSTEM_EXT="$DIR/system_ext.img"
+          export VENDOR="$DIR/vendor.img"
+          export SUPER="$DIR/super.img"
+          export TMP_ENVIRO="$(pwd)/tmp"
 
-                - name: Upload to Github Releases
-                  continue-on-error: true
-                  uses: softprops/action-gh-release@v2
-                  with:
-                        files: |
-                            rel/*.tar
-                            rel/*.tar.xz
-                            rel/*.7z
-                        name: ${{ github.event.inputs.NAME_REL }} - ${{ github.run_id }}
-                        tag_name: ${{ github.run_id }}
-                        body: |
-                            Super Image File used: ${{ github.event.inputs.SUPER_LOCATE }} 
-                            GSI Downloaded:
-                                - Compressed: ${{ github.event.inputs.GSI_IMG_LOCATION_CMP }}
-                                - Uncompressed: ${{ github.event.inputs.GSI_IMG_LOCATION_XT }}
-                            Link to SourceForge: https://sourceforge.net/projects/xynoxx-prebuilt-gsi
-                            Build Method: ${{ github.event.inputs.COMPRESSION_CHOICE }}
-                            Note: If there's nothing here, then the Build was too big for Github Releases to acknowledge, visit SourceForge Instead
+          if [ -e "$DIR/super.img" ]; then
+            simg2img $DIR/super.img $DIR/super_raw.img
+            if [ -e "$DIR/super_raw.img" ]; then
+              if [ "$(stat -c%s "$DIR/super_raw.img")" -lt 100000 ]; then
+                rm -rf $DIR/super_raw.img
+                lpdump $DIR/super.img > $TMP_ENVIRO/super_map.txt
+                printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Size:" | awk '{print $2}' > $TMP_ENVIRO/super_size.txt
+                printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Maximum size:" | awk '{print $3}' | sed '2!d' > $TMP_ENVIRO/super_main.txt
+                lpunpack $DIR/super.img $DIR/
+              else
+                rm -rf $DIR/super.img
+                lpdump $DIR/super_raw.img > $TMP_ENVIRO/super_map.txt
+                printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Size:" | awk '{print $2}' > $TMP_ENVIRO/super_size.txt
+                printf "$(<$TMP_ENVIRO/super_map.txt)" | grep -e "Maximum size:" | awk '{print $3}' | sed '2!d' > $TMP_ENVIRO/super_main.txt
+                lpunpack $DIR/super_raw.img $DIR/
+              fi
+            else
+              echo "Super.img is corrupted"
+              exit 1
+            fi
+          fi
 
-                            Recommend: Please Decompress/Extract the super.img file then flash it to your device
-                  env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                
-                
-                
-                # - name: Upload to Sourceforge - .tar.xz
-                #   continue-on-error: true
-                #   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-                #   with: 
-                #     username: "${{ secrets.SOURCEFORGE_USERNAME }}"
-                #     password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
-                #     port: 22
-                #     local_path: "./rel/${{ github.event.inputs.NAME_ID }}.tar.xz"
-                #     server: frs.sourceforge.net
-                #     remote_path: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
-                    
-                
-                # - name: Upload to Sourceforge - .7z
-                #   continue-on-error: true
-                #   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-                #   with: 
-                #     username: "${{ secrets.SOURCEFORGE_USERNAME }}"
-                #     password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
-                #     port: 22
-                #     local_path: "./rel/${{ github.event.inputs.NAME_ID }}.7z"
-                #     server: frs.sourceforge.net
-                #     remote_path: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+      - name: Edit Super.img
+        run: |
+          export DIR="$(pwd)/image_build"
+          export SYSTEM="$DIR/system.img"
+          export PRODUCT="$DIR/product.img"
 
-                # - name: Upload to Sourceforge - tar
-                #   continue-on-error: true
-                #   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-                #   with: 
-                #     username: "${{ secrets.SOURCEFORGE_USERNAME }}"
-                #     password: "${{ secrets.SOURCEFORGE_PASSWORD }}"
-                #     port: 22
-                #     local_path: "./rel/${{ github.event.inputs.NAME_ID }}.tar"
-                #     server: frs.sourceforge.net
-                #     remote_path: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                #     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          rm -rf $SYSTEM
+          mv image_build/system.img $SYSTEM
+          if [ "$(stat -c%s "$SYSTEM")" -lt 100000 ]; then 
+            echo "Invalid size for a GSI"
+            exit 1
+          fi
+          cp universal/* $DIR/
 
-                # IM MENTALLY INSANE -sftp dont work gdmt
+      - name: Build Super.img
+        run: |
+          export DIR="$(pwd)/image_build"
+          export ODM="$DIR/odm.img"
+          export PRODUCT="$DIR/product.img"
+          export SYSTEM="$DIR/system.img"
+          export SYSTEM_EXT="$DIR/system_ext.img"
+          export VENDOR="$DIR/vendor.img"
+          export SUPER="$DIR/super.img"
+          export TMP_ENVIRO="$(pwd)/tmp"
 
-                # - name: Send to Sourceforge - TAR
-                #   uses: wangyucode/sftp-upload-action@v2.0.2
-                #   continue-on-error: true
-                #   with:
-                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #     host: frs.sourceforge.net
-                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                #     compress: false
-                #     forceUpload: true
-                #     localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar'
-                #     remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                #     exclude: '.git*,universal,image_build,bin'
-                
-                # - name: Send to Sourceforge - TAR.xz
-                #   uses: wangyucode/sftp-upload-action@v2.0.2
-                #   continue-on-error: true
-                #   with:
-                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #     host: frs.sourceforge.net
-                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                #     compress: false
-                #     forceUpload: true
-                #     localDir: './rel/${{ github.event.inputs.NAME_ID }}.tar.xz'
-                #     remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                #     exclude: '.git*,universal,image_build,bin'
-                
+          rm -rf $SUPER
+          if [ "$(find $DIR/system.img -type f ! -size 0 -printf '%s\n' | sed 's/.\.[0-9]*//')" == 1 ]; then
+            echo "PRC"
+          else
+            simg2img $DIR/system.img $DIR/system.raw.img
+          fi
+          if [ -e "$DIR/odm.img" ]; then
+            if [ -e "$DIR/product.img" ]; then
+              if [ "$(stat -c%s "$DIR/product.img")" -gt 6000 ]; then 
+                cp -urf universal/product.img $DIR/product.img
+              fi
+            else
+              cp -urf universal/product.img $DIR/product.img
+            fi
+            cp universal/product.img $PRODUCT
+            lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:$(<$TMP_ENVIRO/super_size.txt) --group main:$(<$TMP_ENVIRO/super_main.txt) --partition system:readonly:$(stat -c%s "$DIR/system.img"):main --image system=$DIR/system.img --partition vendor:readonly:$(stat -c%s "$DIR/vendor.img"):main --image vendor=$DIR/vendor.img --partition product:readonly:$(stat -c%s "$DIR/product.img"):main --image product=$DIR/product.img --partition odm:readonly:$(stat -c%s "$DIR/odm.img"):main --image odm=$DIR/odm.img --sparse --output $DIR/super.img
+          else
+            if [ -e "$DIR/product.img" ]; then 
+              if [ "$(stat -c%s "$DIR/product.img")" -gt 6000 ]; then
+                cp -urf universal/product.img $DIR/product.img
+                cp universal/product.img $PRODUCT
+              fi
+            else 
+              cp -urf universal/product.img $DIR/product.img
+            fi
+            if [ !  -e "$DIR/system_ext.img" ]; then
+              cp -urf universal/system_ext.img $DIR/product.img
+            else 
+              cp -urf universal/system_ext.img $DIR/product.img
+            fi 
+            lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:$(<$TMP_ENVIRO/super_size.txt) --group main:$(<$TMP_ENVIRO/super_main.txt) --partition system:readonly:$(stat -c%s "$DIR/system.img"):main --image system=$DIR/system.img --partition vendor:readonly:$(stat -c%s "$DIR/vendor.img"):main --image vendor=$DIR/vendor.img --partition product:readonly:$(stat -c%s "$DIR/product.img"):main --image product=$DIR/product.img --partition system_ext:readonly:$(stat -c%s "$DIR/system_ext.img"):main --image system_ext=$DIR/system_ext.img --sparse --output $DIR/super.img
 
-                # - name: Send to Sourceforge - 7z
-                #   uses: wangyucode/sftp-upload-action@v2.0.2
-                #   continue-on-error: true
-                #   with:
-                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #     host: frs.sourceforge.net
-                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                #     compress: false
-                #     forceUpload: true
-                #     localDir: './rel/${{ github.event.inputs.NAME_ID }}.7z'
-                #     remoteDir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}'
-                #     exclude: '.git*,universal,image_build,bin'
-   
+      - name: Pack Image
+        run: |
+          export DIR="$(pwd)/image_build"
+          export PRODUCT="$DIR/product.img"
+          export SYSTEM="$DIR/system.img"
+          export SYSTEM_EXT="$DIR/system_ext.img"
+          export VENDOR="$DIR/vendor.img"
+          export SUPER="$DIR/super.img"
+          export TMP_ENVIRO="$(pwd)/tmp"
 
-                # - name: Upload to Sourceforge - Tar
-                #   uses: Dylan700/sftp-upload-action@latest
-                #   continue-on-error: true
-                #   with:
-                #     server: sftp://frs.sourceforge.net
-                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #     passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
-                #     port: 22
-                #     uploads: |
-                #         ./rel/${{ github.event.inputs.NAME_ID }}.tar => /home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}
-                #     ignore: |
-                #         *.git
-                #         ./universal
-                #         ./bin
-                #         ./image_build
-
-                # - name: Upload to Sourceforge - Tar.xz
-                #   uses: Dylan700/sftp-upload-action@latest
-                #   continue-on-error: true
-                #   with:
-                #         server: sftp://frs.sourceforge.net
-                #         username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                #         password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #         passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
-                #         port: 22
-                #         uploads: |
-                #             ./rel/${{ github.event.inputs.NAME_ID }}.tar.xz => /home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}
-                #         ignore: |
-                #             *.git
-                #             ./universal
-                #             ./bin
-                #             ./image_build
-
-                # - name: Upload to Sourceforge - 7z
-                #   uses: Dylan700/sftp-upload-action@latest
-                #   continue-on-error: true
-                #   with:
-                #     server: sftp://frs.sourceforge.net
-                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #     passphrase: ${{ secrets.SSH_PRIVATE_KEY }}
-                #     port: 22
-                #     uploads: |
-                #         ./rel/${{ github.event.inputs.NAME_ID }}.7z => /home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}
-                #     ignore: |
-                #         *.git
-                #         ./universal
-                #         ./bin
-                #         ./image_build
-
-                # - name: Upload to Sourceforge - tar
-                #   uses: Creepios/sftp-action@v1.0.3
-                #   with:
-                #     host: frs.sourceforge.net
-                #     port: 22
-                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                #     localPath: './rel/${{github.event.inputs.NAME_ID}}.tar'
-                #     remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
-                
-                # - name: Upload to Sourceforge - tar.xz
-                #   uses: Creepios/sftp-action@v1.0.3
-                #   with:
-                #       host: frs.sourceforge.net
-                #       port: 22
-                #       username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                #       password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #       privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                #       localPath: './rel/${{github.event.inputs.NAME_ID}}.tar.xz'
-                #       remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
-
-
-                # - name: Upload to Sourceforge - 7z
-                #   uses: Creepios/sftp-action@v1.0.3
-                #   with:
-                #     host: frs.sourceforge.net
-                #     port: 22
-                #     username: ${{ secrets.SOURCEFORGE_USERNAME }}
-                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-                #     localPath: './rel/${{github.event.inputs.NAME_ID}}.7z'
-                #     remotePath: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME}}/${{github.event.inputs.FOLDER_HEADING}}'
-
-                # - name: Deploy to Sourceforge via FTP
-                #   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-                #   with:
-                #     server: frs.sourceforge.net
-                #     port: 22
-                #     username: ${{secrets.SOURCEFORGE_USERNAME}}
-                #     password: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                #     local-dir: './rel/'
-                #     server-dir: '/home/pfs/project/${{ github.event.inputs.PROJECT_ROOT_NAME }}/${{ github.event.inputs.FOLDER_HEADING }}/'
-
-                - name: Deploy to SourceForge
-                  uses: pressidium/lftp-mirror-action@v1
-                  with:
-                    host: frs.sourceforge.net
-                    port: 22
-                    user: ${{ secrets.SOURCEFORGE_USERNAME }}
-                    pass: ${{ secrets.SOURCEFORGE_PASSWORD }}
-                    localDir: './rel/'
-                    remoteDir: '/home/pfs/project/${{ secrets.SOURCEFORGE_REPO_TARGET }}/${{ github.event.inputs.FOLDER_HEADING }}'
-
- 
+          if [ "$COMPRESSION_CHOICE" == "uncompressed" ]; then
+              XZ_OPT=-9 tar -I lz4 -I zstd -I brotli -cf  $FOLDER_HEADING-$NAME_REL.tar
+          fi
+          
+          if [ "$COMPRESSION_CHOICE" == "tar" ]; then
+              XZ_OPT=-9 tar -I lz4 -I zstd -I brotli -cf  $FOLDER_HEADING-$NAME_REL.tar $SUPER
+          fi
+          
+          if [ "$COMPRESSION_CHOICE" == "tar.xz" ]; then
+              XZ_OPT=-9 tar -I lz4 -I zstd -I brotli -cf  $FOLDER_HEADING-$NAME_REL.tar.xz $SUPER
+          fi
+          
+          if [ "$COMPRESSION_CHOICE" == "7z" ]; then
+              XZ_OPT=-9 7z -mx=9 a $FOLDER_HEADING-$NAME_REL.7z $SUPER
+          fi
+          
+          if [ "$COMPRESSION_CHOICE" == "all (tar,tar.xz,7z,uncompressed)" ]; then
+              XZ_OPT=-9 tar -I lz4 -I zstd -I brotli -cf  $FOLDER_HEADING-$NAME_REL.tar $SUPER
+              XZ_OPT=-9 tar -I lz4 -I zstd -I brotli -cf  $FOLDER_HEADING-$NAME_REL.tar.xz $SUPER
+              XZ_OPT=-9 7z -mx=9 a $FOLDER_HEADING-$NAME_REL.7z $SUPER
+          fi
+          
+          rm -rf $SUPER
